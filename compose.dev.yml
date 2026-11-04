@@ -1,0 +1,19 @@
+# Local development database only. Run the server and client with npm (see README).
+# The full app stack (docker-compose.yml) comes from the Lab 5 Starter Kit in Episode 3.
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: approvalflow
+      POSTGRES_PASSWORD: approvalflow
+      POSTGRES_DB: approvalflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U approvalflow -d approvalflow"]
+      interval: 5s
+      retries: 10
+volumes:
+  pgdata:
