@@ -7,10 +7,12 @@ services:
       POSTGRES_USER: approvalflow
       POSTGRES_PASSWORD: approvalflow
       POSTGRES_DB: approvalflow
+    # Host port 5433 so it does not clash with another PostgreSQL already on 5432.
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./scripts/create-test-db.sql:/docker-entrypoint-initdb.d/create-test-db.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U approvalflow -d approvalflow"]
       interval: 5s

@@ -3,6 +3,8 @@ import path from "node:path";
 import express, { type ErrorRequestHandler } from "express";
 import cors from "cors";
 import type { Config } from "./config";
+import { HttpError } from "./http";
+import { apiRouter } from "./routes";
 
 export interface AppDeps {
   config: Config;
@@ -32,8 +34,10 @@ export function createApp({ config, checkDb }: AppDeps) {
     }
   });
 
+  app.use("/api", apiRouter);
+
   app.use("/api", (_req, res) => {
-    res.status(404).json({ error: "NOT_FOUND" });
+    res.status(404).json({ error: "NOT_FOUND", message: "Unknown API route" });
   });
 
   // In production the same container serves the built React app.
@@ -46,8 +50,17 @@ export function createApp({ config, checkDb }: AppDeps) {
   }
 
   const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
+    if (err instanceof HttpError) {
+      res.status(err.status).json({ error: err.code, message: err.message });
+      return;
+    }
+    // Malformed JSON body from express.json().
+    if (err?.type === "entity.parse.failed") {
+      res.status(400).json({ error: "VALIDATION_ERROR", message: "Invalid JSON body" });
+      return;
+    }
     console.error(err);
-    res.status(500).json({ error: "INTERNAL_ERROR" });
+    res.status(500).json({ error: "INTERNAL_ERROR", message: "Unexpected server error" });
   };
   app.use(errorHandler);
 
