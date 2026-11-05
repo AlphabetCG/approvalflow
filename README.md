@@ -35,17 +35,35 @@ cd client && npm install && npm run dev        # http://localhost:5173 (proxies 
 
 Check: <http://localhost:3000/api/health> and <http://localhost:3000/api/ready>.
 
+### Database port
+
+The dev database listens on host port **5433** by default. If something else already uses 5433, `docker compose up` fails with "port is already allocated". If you miss that error, `server/.env` still points at 5433 and Prisma would migrate the *other* PostgreSQL. Check with `docker compose -f compose.dev.yml ps` that the `db` container is running before you migrate. To pick another port:
+
+1. Create a `.env` file in the repository root (it is git-ignored) with `DB_PORT=55433`, or export `DB_PORT` in your shell.
+2. `docker compose -f compose.dev.yml up -d`
+3. Change `5433` to the same port in `server/.env` and `server/.env.test`.
+
+**Already have a `server/.env`?** Files copied before the move to 5433 still say `5432`. Change the port in `DATABASE_URL` yourself; copying the example again would overwrite your other settings.
+
 ## Test and build
 
-Server tests include API/database integration tests. They use a separate database, `approvalflow_test`, which `compose.dev.yml` creates the first time it starts. The test setup wipes that database, and refuses to run on a database whose name lacks `test`.
+Server integration tests (`*.int.test.ts`) use a separate database, `approvalflow_test`, which `compose.dev.yml` creates the first time it starts. Before the run, the test setup drops everything in that database and applies the migrations of the current branch, so tables from other branches never linger. It refuses to run unless the database is on `localhost` and its name is `test` or ends with `_test` (CI can allow another host with `TEST_DB_HOSTS`).
+
+Run from the repository root:
 
 ```bash
 cp server/.env.test.example server/.env.test   # once
-cd server && npm test && npm run build
-cd client && npm test && npm run build
+(cd server && npm test && npm run build)
+(cd client && npm test && npm run build)
 ```
 
-If you started the database before `scripts/create-test-db.sql` existed, recreate it once: `docker compose -f compose.dev.yml down -v` and then `up -d`. This deletes local dev data.
+`npm test` in `server` runs both kinds. Without a database, `npm run test:unit` runs only the tests that do not need one; `npm run test:integration` runs only the database tests.
+
+If you started the database before `scripts/create-test-db.sql` existed, create the test database once (keeps your dev data):
+
+```bash
+docker compose -f compose.dev.yml exec db createdb -U approvalflow approvalflow_test
+```
 
 ## Getting started (teammate)
 

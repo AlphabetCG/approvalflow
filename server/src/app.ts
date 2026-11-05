@@ -6,6 +6,16 @@ import type { Config } from "./config";
 import { HttpError } from "./http";
 import { apiRouter } from "./routes";
 
+const CLIENT_ERROR_CODES: Record<number, string> = {
+  400: "VALIDATION_ERROR",
+  401: "UNAUTHENTICATED",
+  403: "FORBIDDEN",
+  404: "NOT_FOUND",
+  409: "CONFLICT",
+  413: "PAYLOAD_TOO_LARGE",
+  415: "UNSUPPORTED_MEDIA_TYPE",
+};
+
 export interface AppDeps {
   config: Config;
   checkDb: () => Promise<void>;
@@ -14,10 +24,11 @@ export interface AppDeps {
 export function createApp({ config, checkDb }: AppDeps) {
   const app = express();
   app.disable("x-powered-by");
-  app.use(express.json({ limit: "1mb" }));
+  // CORS first, so error responses (e.g. a bad JSON body) still carry its headers.
   if (config.corsOrigins.length > 0) {
     app.use(cors({ origin: config.corsOrigins, credentials: true }));
   }
+  app.use(express.json({ limit: "1mb" }));
 
   // Liveness: the process is up.
   app.get("/api/health", (_req, res) => {
@@ -49,14 +60,27 @@ export function createApp({ config, checkDb }: AppDeps) {
     });
   }
 
-  const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
+  const errorHandler: ErrorRequestHandler = (err, _req, res, next) => {
+    // Too late to send JSON; let Express close the connection.
+    if (res.headersSent) {
+      next(err);
+      return;
+    }
     if (err instanceof HttpError) {
       res.status(err.status).json({ error: err.code, message: err.message });
       return;
     }
-    // Malformed JSON body from express.json().
-    if (err?.type === "entity.parse.failed") {
-      res.status(400).json({ error: "VALIDATION_ERROR", message: "Invalid JSON body" });
+    // Client errors from Express and body-parser (bad JSON, body too large,
+    // unsupported charset, undecodable URL param, ...) carry a 4xx status.
+    const status = Number(err?.status ?? err?.statusCode);
+    if (Number.isInteger(status) && status >= 400 && status < 500) {
+      const message =
+        err.type === "entity.parse.failed"
+          ? "Invalid JSON body"
+          : err.expose && typeof err.message === "string"
+            ? err.message
+            : "Bad request";
+      res.status(status).json({ error: CLIENT_ERROR_CODES[status] ?? "BAD_REQUEST", message });
       return;
     }
     console.error(err);
