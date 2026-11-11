@@ -73,7 +73,11 @@ export function createApp({ config, checkDb }: AppDeps) {
       return;
     }
     if (err instanceof HttpError) {
-      res.status(err.status).json({ error: err.code, message: err.message });
+      res.status(err.status).json({
+        error: err.code,
+        message: err.message,
+        ...(err.details ? { details: err.details } : {}),
+      });
       return;
     }
     // Client errors from Express and body-parser (bad JSON, body too large,
