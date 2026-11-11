@@ -113,6 +113,35 @@ describe("NewRequestPage (F-02)", () => {
     expect(submit()).toBeEnabled();
   });
 
+  // T-02-21 (AC-02-9): an edit made while waiting would be wiped by the reset after success.
+  it("locks every field while submitting, so no edit is lost when the form resets", async () => {
+    let answer!: (res: Response) => void;
+    mockFetch(new Promise<Response>((resolve) => (answer = resolve)));
+    render(<NewRequestPage />);
+    const user = userEvent.setup();
+    await fillValid(user);
+
+    await user.click(submit());
+    for (const label of ["Title", "Category", "Amount (THB)", "Description"]) {
+      expect(screen.getByLabelText(label)).toBeDisabled();
+    }
+    await user.type(screen.getByLabelText("Title"), " (edited)");
+    expect(screen.getByLabelText("Title")).toHaveValue("Conference travel");
+
+    answer(
+      json(201, {
+        id: "r1",
+        title: "Conference travel",
+        status: "SUBMITTED",
+        amount: "1500.50",
+        reviewer: { id: "u2", email: "chai@example.com" },
+      }),
+    );
+    expect(await screen.findByRole("status")).toHaveTextContent(/SUBMITTED/);
+    expect(screen.getByLabelText("Title")).toBeEnabled();
+    expect(screen.getByLabelText("Title")).toHaveValue("");
+  });
+
   // T-02-17 (AC-02-9)
   it("shows the API message on 409 and keeps what the user typed", async () => {
     mockFetch(json(409, { error: "CONFLICT", message: "No reviewer is available in your department" }));
