@@ -61,5 +61,7 @@ Excluded: real payments, email notifications, self-registration, password recove
 
 | ID | Item | Status |
 |---|---|---|
-| D-01 | Reviewer assignment: _TODO (e.g. round-robin among reviewers in the same department, never the requester)_ | Open |
+| D-01 | Reviewer assignment: round-robin among reviewers in the requester's department, never the requester; 409 if nobody is eligible (see F-02) | Accepted (PR #10 review, 2026-11-06) |
 | D-02 | Second-stage threshold amount: _TODO_ | Open |
+| D-03 | Request categories: TRAVEL, SUPPLIES, EQUIPMENT, TRAINING, OTHER (see F-02) | Accepted (PR #10 review, 2026-11-06) |
+| D-04 | Title (1–200 characters) and description (1–2000 characters) are both required (see F-02) | Accepted (PR #10 review, 2026-11-06) |
