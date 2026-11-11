@@ -9,3 +9,32 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// F-01 (D-09): ADMIN is added in Sprint 2.
+enum Role {
+  REQUESTER
+  REVIEWER
+}
+
+// F-01. Email is stored in lower case (D-07); id is a cuid (D-08).
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  passwordHash String
+  role         Role
+  department   String
+  createdAt    DateTime  @default(now())
+  sessions     Session[]
+}
+
+// F-01 (D-05). id is the SHA-256 hex of the cookie token, never the token itself.
+model Session {
+  id        String   @id
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
