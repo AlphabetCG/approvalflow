@@ -100,6 +100,16 @@ describe("App authentication (F-01)", () => {
     expect(calls).toContain("POST /api/auth/logout");
   });
 
+  // F-02: the header links to the new request form.
+  it("opens the New request form from the header", async () => {
+    mockApi({ "GET /api/auth/me": [json(200, { user: alice })] });
+    render(<App />);
+    const user = userEvent.setup();
+    await user.click(await screen.findByRole("link", { name: "New request" }));
+    expect(await screen.findByRole("heading", { name: "New request" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Submit request" })).toBeInTheDocument();
+  });
+
   it("skips the login form when a session already exists", async () => {
     mockApi({ "GET /api/auth/me": [json(200, { user: { ...alice, name: "Bob", role: "REVIEWER" } })] });
     render(<App />);
