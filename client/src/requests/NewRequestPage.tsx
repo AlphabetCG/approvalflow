@@ -94,48 +94,51 @@ export default function NewRequestPage() {
         </p>
       )}
       <form onSubmit={onSubmit} noValidate>
-        <FieldRow id="title" label="Title" error={fieldErrors.title}>
-          <input
-            {...describe("title")}
-            value={form.title}
-            onChange={set("title")}
-            maxLength={MAX_TITLE_LENGTH}
-            required
-          />
-        </FieldRow>
-        <FieldRow id="category" label="Category" error={fieldErrors.category}>
-          <select {...describe("category")} value={form.category} onChange={set("category")} required>
-            <option value="">Choose…</option>
-            {CATEGORIES.map((c) => (
-              <option key={c.value} value={c.value}>
-                {c.label}
-              </option>
-            ))}
-          </select>
-        </FieldRow>
-        <FieldRow id="amount" label="Amount (THB)" error={fieldErrors.amount}>
-          <input
-            {...describe("amount")}
-            type="number"
-            inputMode="decimal"
-            min="0.01"
-            max="100000"
-            step="0.01"
-            value={form.amount}
-            onChange={set("amount")}
-            required
-          />
-        </FieldRow>
-        <FieldRow id="description" label="Description" error={fieldErrors.description}>
-          <textarea
-            {...describe("description")}
-            rows={4}
-            value={form.description}
-            onChange={set("description")}
-            maxLength={MAX_DESCRIPTION_LENGTH}
-            required
-          />
-        </FieldRow>
+        {/* Locked while submitting: the reset after success would otherwise wipe edits made meanwhile. */}
+        <fieldset className="form-fields" disabled={submitting}>
+          <FieldRow id="title" label="Title" error={fieldErrors.title}>
+            <input
+              {...describe("title")}
+              value={form.title}
+              onChange={set("title")}
+              maxLength={MAX_TITLE_LENGTH}
+              required
+            />
+          </FieldRow>
+          <FieldRow id="category" label="Category" error={fieldErrors.category}>
+            <select {...describe("category")} value={form.category} onChange={set("category")} required>
+              <option value="">Choose…</option>
+              {CATEGORIES.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </FieldRow>
+          <FieldRow id="amount" label="Amount (THB)" error={fieldErrors.amount}>
+            <input
+              {...describe("amount")}
+              type="number"
+              inputMode="decimal"
+              min="0.01"
+              max="100000"
+              step="0.01"
+              value={form.amount}
+              onChange={set("amount")}
+              required
+            />
+          </FieldRow>
+          <FieldRow id="description" label="Description" error={fieldErrors.description}>
+            <textarea
+              {...describe("description")}
+              rows={4}
+              value={form.description}
+              onChange={set("description")}
+              maxLength={MAX_DESCRIPTION_LENGTH}
+              required
+            />
+          </FieldRow>
+        </fieldset>
         {error && <p role="alert">{error}</p>}
         <button type="submit" disabled={submitting}>
           Submit request
