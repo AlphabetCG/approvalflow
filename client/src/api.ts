@@ -1,11 +1,18 @@
 const BASE = import.meta.env.VITE_API_URL ?? "";
 
-// Error body from the API: { error, message } (server/src/http.ts).
+// One entry per invalid field in a 400 (F-02 contract).
+export interface FieldErrorDetail {
+  field: string;
+  message: string;
+}
+
+// Error body from the API: { error, message, details? } (server/src/http.ts).
 export class ApiError extends Error {
   constructor(
     public readonly status: number,
     public readonly code: string,
     message: string,
+    public readonly details?: FieldErrorDetail[],
   ) {
     super(message);
   }
@@ -20,7 +27,12 @@ export async function api<T>(path: string, options: { method?: string; body?: un
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    throw new ApiError(res.status, body.error ?? "HTTP_ERROR", body.message ?? `${res.status} ${res.statusText}`);
+    throw new ApiError(
+      res.status,
+      body.error ?? "HTTP_ERROR",
+      body.message ?? `${res.status} ${res.statusText}`,
+      Array.isArray(body.details) ? body.details : undefined,
+    );
   }
   return (res.status === 204 ? undefined : await res.json()) as T;
 }
