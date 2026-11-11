@@ -4,9 +4,16 @@ Requirement → feature → sprint → acceptance criterion → planned test →
 
 | Requirement | Feature | Sprint | AC | Planned test | Actual test file / name | Result | Commit |
 |---|---|---|---|---|---|---|---|
-| FR-01 | F-01 | 1 | AC-01 | TEST-01 | _TODO_ | _not run_ | |
+| FR-01 | F-01 | 1 | AC-01-1, AC-01-8 | T-01-04, T-01-11 | `server/tests/auth.int.test.ts` (POST /api/auth/login) | PASS (API + DB) | 6cd4f46 |
+| FR-01 | F-01 | 1 | AC-01-2, AC-01-3 | T-01-05, T-01-06 | `server/tests/auth.int.test.ts` (POST /api/auth/login) | PASS (API + DB) | 6cd4f46 |
+| FR-01 | F-01 | 1 | AC-01-5 | T-01-08 | `server/tests/auth.int.test.ts` (POST /api/auth/logout) | PASS (API + DB) | 6cd4f46 |
+| FR-01 | F-01 | 1 | AC-01-9 | T-01-13, T-01-14, T-01-15 | `client/src/App.test.tsx` (App authentication) | PASS (component) | 597e88b |
+| FR-01 | F-01 | 1 | AC-01-10 | T-01-12 | `server/tests/auth.int.test.ts` (seedDemoUsers) | PASS (API + DB) | 6cd4f46 |
+| NFR-01 | F-01 | 1 | AC-01-4 | T-01-07 | `server/tests/auth.int.test.ts` (GET /api/auth/me) | PASS (API + DB) | 6cd4f46 |
+| NFR-01 | F-01 | 1 | AC-01-6 | T-01-09 | `server/tests/auth.int.test.ts` (requireRole) | PASS (API + DB) | 6cd4f46 |
+| NFR-02 | F-01 | 1 | AC-01-7 | T-01-01, T-01-02, T-01-10 | `server/tests/auth.test.ts`; `server/tests/auth.int.test.ts` (stored credentials) | PASS (unit, API + DB) | 6cd4f46 |
+| – (D-05, D-06) | F-01 | 1 | – | T-01-03 | `server/tests/auth.test.ts` (session cookie options) | PASS (unit) | 6cd4f46 |
 | BR-01 | F-04 | 1 | _TODO_ | _TODO_ | | | |
-| NFR-01 | F-01 | 1 | _TODO_ | _TODO_ | | | |
 | BR-04 | F-02 | 1 | AC-02-2 | T-02-01, T-02-02 | `server/tests/request-validation.test.ts` (amount cases) | PASS (unit) | f5a2020 |
 | BR-04 | F-02 | 1 | AC-02-2 | T-02-09 | | _not run_ | |
 | FR-02 | F-02 | 1 | AC-02-3, AC-02-8 | T-02-03, T-02-04 | `server/tests/request-validation.test.ts` (text, category, body cases) | PASS (unit) | f5a2020 |

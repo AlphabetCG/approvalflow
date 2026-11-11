@@ -35,6 +35,19 @@ cd client && npm install && npm run dev        # http://localhost:5173 (proxies 
 
 Check: <http://localhost:3000/api/health> and <http://localhost:3000/api/ready>.
 
+### Demo accounts
+
+The seed creates demo users only when `DEMO_USER_PASSWORD` (8+ characters) is set in `server/.env`. All of them share that password, which you choose yourself and never commit. Rerunning the seed keeps existing users.
+
+| Email | Role | Department |
+|---|---|---|
+| `req.eng1@example.com`, `req.eng2@example.com` | Requester | ENGINEERING |
+| `rev.eng1@example.com`, `rev.eng2@example.com` | Reviewer | ENGINEERING |
+| `req.fin1@example.com` | Requester | FINANCE |
+| `rev.fin1@example.com`, `rev.fin2@example.com` | Reviewer | FINANCE |
+
+In API tests, use `createUser()` and `loginAs()` from `server/tests/helpers/auth.ts` instead of the seed.
+
 ### Database port
 
 The dev database listens on host port **5433** by default. If something else already uses 5433, `docker compose up` fails with "port is already allocated". If you miss that error, `server/.env` still points at 5433 and Prisma would migrate the *other* PostgreSQL. Check with `docker compose -f compose.dev.yml ps` that the `db` container is running before you migrate. To pick another port:

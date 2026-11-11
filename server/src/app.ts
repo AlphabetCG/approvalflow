@@ -2,7 +2,10 @@ import fs from "node:fs";
 import path from "node:path";
 import express, { type ErrorRequestHandler } from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+import { loadSessionUser } from "./auth/middleware";
 import type { Config } from "./config";
+import { authRouter } from "./routes/auth";
 import { HttpError } from "./http";
 import { apiRouter } from "./routes";
 
@@ -45,6 +48,9 @@ export function createApp({ config, checkDb }: AppDeps) {
     }
   });
 
+  // F-01: read the session cookie once, so every route below can use req.user.
+  app.use("/api", cookieParser(), loadSessionUser);
+  app.use("/api/auth", authRouter(config));
   app.use("/api", apiRouter);
 
   app.use("/api", (_req, res) => {

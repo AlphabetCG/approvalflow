@@ -65,3 +65,8 @@ Excluded: real payments, email notifications, self-registration, password recove
 | D-02 | Second-stage threshold amount: _TODO_ | Open |
 | D-03 | Request categories: TRAVEL, SUPPLIES, EQUIPMENT, TRAINING, OTHER (see F-02) | Accepted (PR #10 review, 2026-11-06) |
 | D-04 | Title (1–200 characters) and description (1–2000 characters) are both required (see F-02) | Accepted (PR #10 review, 2026-11-06) |
+| D-05 | Server-side sessions in the database with an HttpOnly cookie, no JWT (see F-01) | Proposed |
+| D-06 | Sessions last 8 hours from login, configurable with `SESSION_TTL_HOURS` (see F-01) | Proposed |
+| D-07 | Emails are case-insensitive, stored in lower case (see F-01) | Proposed |
+| D-08 | User ids are cuid strings (see F-01) | Proposed |
+| D-09 | Sprint 1 roles are REQUESTER and REVIEWER; ADMIN comes in Sprint 2 (see F-01) | Proposed |
