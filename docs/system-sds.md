@@ -55,7 +55,15 @@ Hiding a button in the UI is not authorization; every rule above is enforced in 
 
 ## 6. Authentication
 
-_TODO: password hashing (bcrypt cost), session cookie (HttpOnly, SameSite), expiry, logout behavior._
+Details and tests: [F-01 contract](sprints/sprint-1/F-01.md).
+
+- **Passwords:** bcrypt, cost 12 (`server/src/auth/password.ts`). A failed login compares against a dummy hash when the email is unknown, so the 401 and its timing do not reveal which accounts exist.
+- **Sessions:** stored in the `Session` table, so they survive a redeploy and work across Cloud Run instances. The cookie `af_session` holds 32 random bytes; the table holds only their SHA-256 hash.
+- **Cookie:** `HttpOnly`, `SameSite=Lax`, `Path=/`, `Secure` in production. `SameSite=Lax` plus JSON-only endpoints is the CSRF protection for Sprint 1.
+- **Expiry:** 8 hours after login, not extended by activity (`SESSION_TTL_HOURS`). An expired session is rejected and deleted when it is next used.
+- **Current user:** `loadSessionUser` runs on every `/api` request and sets `req.user`. `GET /api/auth/me` returns it.
+- **Logout:** deletes the session row and clears the cookie. Idempotent (204 even without a session).
+- **Enforcement:** routes use `requireAuth` (401) and `requireRole(...)` (403) from `server/src/auth/middleware.ts`. Record ownership checks (own request, assigned reviewer) are done in each feature's handler.
 
 ## 7. Configuration and deployment plan
 
