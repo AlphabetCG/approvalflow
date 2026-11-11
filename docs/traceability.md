@@ -19,7 +19,7 @@ Requirement → feature → sprint → acceptance criterion → planned test →
 | BR-04 | F-02 | 1 | AC-02-2 | T-02-18 | `server/tests/requests.int.test.ts` (Request table constraints) | PASS (DB) | eb53ec6 |
 | FR-02 | F-02 | 1 | AC-02-3, AC-02-8 | T-02-03, T-02-04 | `server/tests/request-validation.test.ts` (text, category, body cases) | PASS (unit) | eb53ec6 |
 | FR-02 | F-02 | 1 | AC-02-1, AC-02-8 | T-02-08, T-02-14 | `server/tests/requests.int.test.ts` (POST /api/requests) | PASS (API + DB) | eb53ec6 |
-| FR-02 | F-02 | 1 | AC-02-9 | T-02-16, T-02-17, T-02-19 | `client/src/requests/NewRequestPage.test.tsx` | PASS (component) | eb53ec6 |
+| FR-02 | F-02 | 1 | AC-02-9 | T-02-16, T-02-17, T-02-19, T-02-21 | `client/src/requests/NewRequestPage.test.tsx` | PASS (component) | fd315d7 |
 | FR-03 | F-02 | 1 | AC-02-5, AC-02-6, AC-02-7 | T-02-05, T-02-06, T-02-07 | `server/tests/assign-reviewer.test.ts` | PASS (unit) | eb53ec6 |
 | FR-03 | F-02 | 1 | AC-02-5, AC-02-6, AC-02-7 | T-02-11, T-02-12, T-02-13 | `server/tests/requests.int.test.ts` (POST /api/requests) | PASS (API + DB) | eb53ec6 |
 | FR-03 | F-02 | 1 | AC-02-5 | T-02-18 | `server/tests/requests.int.test.ts` (Request table constraints) | PASS (DB) | eb53ec6 |

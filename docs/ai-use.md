@@ -6,3 +6,4 @@
 | 2026-11-06 | Claude Code | F-02 contract draft, validation and reviewer-assignment logic with unit tests | _TODO_ |
 | 2026-11-11 | Claude Code | F-01 contract draft, server auth (sessions, middleware, seed), client login/logout, tests | _TODO_ |
 | 2026-11-11 | Claude Code | F-02 migration, POST /api/requests, sample-request seed, New request form, tests | _TODO_ |
+| 2026-11-12 | Claude Code | F-02 review fix: lock form fields while submitting, test T-02-21 | _TODO_ |
