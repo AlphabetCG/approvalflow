@@ -18,14 +18,17 @@ enum Role {
 
 // F-01. Email is stored in lower case (D-07); id is a cuid (D-08).
 model User {
-  id           String    @id @default(cuid())
-  email        String    @unique
+  id           String           @id @default(cuid())
+  email        String           @unique
   name         String
   passwordHash String
   role         Role
   department   String
-  createdAt    DateTime  @default(now())
+  createdAt    DateTime         @default(now())
   sessions     Session[]
+  requests     Request[]        @relation("RequestRequester")
+  reviews      Request[]        @relation("RequestReviewer")
+  history      RequestHistory[]
 }
 
 // F-01 (D-05). id is the SHA-256 hex of the cookie token, never the token itself.
@@ -37,4 +40,62 @@ model Session {
   createdAt DateTime @default(now())
 
   @@index([userId])
+}
+
+// F-02 (D-03). Values are fixed; Sprint 2 filters by them (FR-11).
+enum RequestCategory {
+  TRAVEL
+  SUPPLIES
+  EQUIPMENT
+  TRAINING
+  OTHER
+}
+
+enum RequestStatus {
+  SUBMITTED
+  APPROVED
+  REJECTED
+}
+
+// What a RequestHistory row records. F-04 writes APPROVE and REJECT.
+enum HistoryAction {
+  SUBMIT
+  APPROVE
+  REJECT
+}
+
+// F-02. CHECK constraints added by hand in the add_requests migration:
+// amount > 0 AND amount <= 100000 (BR-04), requesterId <> reviewerId.
+model Request {
+  id          String           @id @default(cuid())
+  requesterId String
+  requester   User             @relation("RequestRequester", fields: [requesterId], references: [id])
+  reviewerId  String
+  reviewer    User             @relation("RequestReviewer", fields: [reviewerId], references: [id])
+  title       String
+  category    RequestCategory
+  amount      Decimal          @db.Decimal(12, 2)
+  description String
+  status      RequestStatus    @default(SUBMITTED)
+  submittedAt DateTime         @default(now())
+  history     RequestHistory[]
+
+  @@index([reviewerId, status])
+  @@index([requesterId])
+}
+
+// F-02 (FR-07, BR-06). Append-only: the application never updates or deletes rows.
+model RequestHistory {
+  id         String         @id @default(cuid())
+  requestId  String
+  request    Request        @relation(fields: [requestId], references: [id])
+  actorId    String
+  actor      User           @relation(fields: [actorId], references: [id])
+  action     HistoryAction
+  fromStatus RequestStatus?
+  toStatus   RequestStatus
+  reason     String?
+  createdAt  DateTime       @default(now())
+
+  @@index([requestId, createdAt])
 }

@@ -3,7 +3,7 @@ import request from "supertest";
 import { describe, expect, it } from "vitest";
 import { createApp } from "../src/app";
 import { loadConfig } from "../src/config";
-import { conflict, forbidden } from "../src/http";
+import { badRequest, conflict, forbidden } from "../src/http";
 import { apiRouter } from "../src/routes";
 
 // Mount throwaway routes on the shared router to exercise the error handler.
@@ -16,6 +16,9 @@ probe.get("/conflict", async () => {
 });
 probe.get("/boom", () => {
   throw new Error("unexpected");
+});
+probe.get("/invalid", () => {
+  throw badRequest("Title is required", [{ field: "title", message: "Title is required" }]);
 });
 probe.get("/items/:id", (req, res) => {
   res.json({ id: req.params.id });
@@ -44,6 +47,22 @@ describe("HttpError handling", () => {
     const res = await request(app).get("/api/__probe/boom");
     expect(res.status).toBe(500);
     expect(res.body).toEqual({ error: "INTERNAL_ERROR", message: "Unexpected server error" });
+  });
+
+  // F-02 contract: a 400 carries per-field details; other errors keep { error, message }.
+  it("adds details to a 400 when they are given", async () => {
+    const res = await request(app).get("/api/__probe/invalid");
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual({
+      error: "VALIDATION_ERROR",
+      message: "Title is required",
+      details: [{ field: "title", message: "Title is required" }],
+    });
+  });
+
+  it("leaves details out when there are none", async () => {
+    const res = await request(app).get("/api/__probe/forbidden");
+    expect(res.body).not.toHaveProperty("details");
   });
 });
 
