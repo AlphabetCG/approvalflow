@@ -1,5 +1,7 @@
 import { Router } from "express";
+import { decisionsRouter } from "./decisions";
 import { requestsRouter } from "./requests";
+import { reviewsRouter } from "./reviews";
 
 // Every feature adds its own router file in this folder and mounts it here,
 // one line per feature, so parallel branches rarely conflict:
@@ -9,3 +11,5 @@ import { requestsRouter } from "./requests";
 export const apiRouter = Router();
 
 apiRouter.use("/requests", requestsRouter); // F-02
+apiRouter.use("/requests", decisionsRouter); // F-04: /:id/approve, /:id/reject
+apiRouter.use("/reviews", reviewsRouter); // F-04: /queue
