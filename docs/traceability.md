@@ -32,5 +32,12 @@ Requirement → feature → sprint → acceptance criterion → planned test →
 | FR-07 | F-02 | 1 | AC-02-1 | T-02-08, T-02-15 | `server/tests/requests.int.test.ts` (POST /api/requests) | PASS (API + DB) | eb53ec6 |
 | BR-06 | F-02 | 1 | AC-02-1 | T-02-08 | `server/tests/requests.int.test.ts` (POST /api/requests) | PASS (API + DB) | eb53ec6 |
 | NFR-01 | F-02 | 1 | AC-02-4 | T-02-10 | `server/tests/requests.int.test.ts` (POST /api/requests) | PASS (API + DB) | eb53ec6 |
+| FR-04 | F-03 | 1 | AC-03-1, AC-03-2 | T-03-01, T-03-02 | `server/tests/my-requests.int.test.ts` (GET /api/requests/mine) | PASS (API + DB) | f4b33ba |
+| FR-04 | F-03 | 1 | AC-03-1, AC-03-2, AC-03-7 | T-03-09, T-03-10, T-03-11, T-03-14 | `client/src/requests/MyRequestsPage.test.tsx`; `client/src/App.test.tsx` (opens My requests) | PASS (component) | 0fbf79f |
+| FR-04 | F-03 | 1 | AC-03-3 | T-03-03, T-03-04 | `server/tests/my-requests.int.test.ts` (GET /api/requests/:id) | PASS (API + DB) | f4b33ba |
+| FR-04 | F-03 | 1 | AC-03-3, AC-03-4, AC-03-5, AC-03-7 | T-03-12, T-03-13, T-03-15 | `client/src/requests/RequestDetailPage.test.tsx`; `client/src/requests/NewRequestPage.test.tsx` (View request link) | PASS (component) | 0fbf79f |
+| FR-07 | F-03 | 1 | AC-03-5 | T-03-07 | `server/tests/my-requests.int.test.ts` (history oldest first) | PASS (API + DB) | f4b33ba |
+| NFR-03 | F-03 | 1 | AC-03-4 | T-03-05, T-03-06 | `server/tests/my-requests.int.test.ts` (404 for others and unknown ids) | PASS (API + DB) | f4b33ba |
+| NFR-01 | F-03 | 1 | AC-03-6 | T-03-08 | `server/tests/my-requests.int.test.ts` (without a session) | PASS (API + DB) | f4b33ba |
 
 Do not mark a row PASS until the test has run on the stated commit.
