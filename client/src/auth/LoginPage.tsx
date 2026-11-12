@@ -2,7 +2,7 @@ import { useState, type FormEvent } from "react";
 import { loginErrorMessage, useAuth } from "./AuthContext";
 
 export default function LoginPage() {
-  const { login } = useAuth();
+  const { login, notice } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -24,6 +24,11 @@ export default function LoginPage() {
   return (
     <main className="login">
       <h1>ApprovalFlow</h1>
+      {notice && !error && (
+        <p role="status" className="notice">
+          {notice}
+        </p>
+      )}
       <form onSubmit={onSubmit} noValidate>
         <label>
           Email

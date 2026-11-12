@@ -27,6 +27,7 @@ export async function api<T>(path: string, options: { method?: string; body?: un
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
+    if (res.status === 401) onUnauthorized?.();
     throw new ApiError(
       res.status,
       body.error ?? "HTTP_ERROR",
@@ -37,6 +38,11 @@ export async function api<T>(path: string, options: { method?: string; body?: un
   return (res.status === 204 ? undefined : await res.json()) as T;
 }
 
-export async function getJson<T>(path: string): Promise<T> {
-  return api<T>(path);
+// Called on every 401, before the ApiError is thrown. AuthProvider registers it
+// so an expired session sends the user to the login page from any page (F-01 v2);
+// pages do not handle 401 themselves.
+let onUnauthorized: (() => void) | null = null;
+
+export function setUnauthorizedHandler(handler: (() => void) | null): void {
+  onUnauthorized = handler;
 }
