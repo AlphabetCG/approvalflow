@@ -70,3 +70,7 @@ Excluded: real payments, email notifications, self-registration, password recove
 | D-07 | Emails are case-insensitive, stored in lower case (see F-01) | Accepted (PR #11 review, 2026-11-11) |
 | D-08 | User ids are cuid strings (see F-01) | Accepted (PR #11 review, 2026-11-11) |
 | D-09 | Sprint 1 roles are REQUESTER and REVIEWER; ADMIN comes in Sprint 2 (see F-01) | Accepted (PR #11 review, 2026-11-11) |
+| D-13 | Only the assigned reviewer decides; others get 404 like D-10, and a requester deciding on their own request gets 403 (see F-04) | Proposed |
+| D-14 | Reject needs a reason of 10–1000 characters; approve takes an optional comment up to 1000 (see F-04) | Proposed |
+| D-15 | Review queue: assigned SUBMITTED requests, oldest first, no paging in Sprint 1 (see F-04) | Proposed |
+| D-16 | Decisions are final in Sprint 1; return for changes is F-06 in Sprint 2 (see F-04) | Proposed |
