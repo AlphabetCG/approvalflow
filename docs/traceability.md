@@ -13,6 +13,11 @@ Requirement → feature → sprint → acceptance criterion → planned test →
 | NFR-01 | F-01 | 1 | AC-01-6 | T-01-09 | `server/tests/auth.int.test.ts` (requireRole) | PASS (API + DB) | 6cd4f46 |
 | NFR-02 | F-01 | 1 | AC-01-7 | T-01-01, T-01-02, T-01-10 | `server/tests/auth.test.ts`; `server/tests/auth.int.test.ts` (stored credentials) | PASS (unit, API + DB) | 6cd4f46 |
 | – (D-05, D-06) | F-01 | 1 | – | T-01-03 | `server/tests/auth.test.ts` (session cookie options) | PASS (unit) | 6cd4f46 |
+| FR-01 | F-01 | 1 | AC-01-11 | T-01-16 | `client/src/App.test.tsx` (App session edge cases, sign out fails) | PASS (component) | 2a54443 |
+| FR-01 | F-01 | 1 | AC-01-12 | T-01-17 | `client/src/App.test.tsx` (App session edge cases, login 5xx) | PASS (component) | 2a54443 |
+| NFR-01 | F-01 | 1 | AC-01-13 | T-01-18, T-01-19 | `client/src/App.test.tsx` (App session edge cases, 401) | PASS (component) | 2a54443 |
+| NFR-01 | F-01 | 1 | AC-01-14 | T-01-20, T-01-21 | `server/tests/auth.int.test.ts` (session cleanup) | PASS (API + DB) | 31036a1 |
+| FR-01 | F-01 | 1 | AC-01-2 | T-01-22 | `server/tests/auth.test.ts` (dummy hash for unknown emails) | PASS (unit) | 31036a1 |
 | BR-01 | F-04 | 1 | _TODO_ | _TODO_ | | | |
 | BR-04 | F-02 | 1 | AC-02-2 | T-02-01, T-02-02 | `server/tests/request-validation.test.ts` (amount cases) | PASS (unit) | eb53ec6 |
 | BR-04 | F-02 | 1 | AC-02-2 | T-02-09 | `server/tests/requests.int.test.ts` (POST /api/requests, 400 cases) | PASS (API + DB) | eb53ec6 |

@@ -49,7 +49,7 @@ export function createApp({ config, checkDb }: AppDeps) {
   });
 
   // F-01: read the session cookie once, so every route below can use req.user.
-  app.use("/api", cookieParser(), loadSessionUser);
+  app.use("/api", cookieParser(), loadSessionUser(config));
   app.use("/api/auth", authRouter(config));
   app.use("/api", apiRouter);
 

@@ -1,7 +1,7 @@
 // F-01 sessions (D-05, D-06): a random token in an HttpOnly cookie; the
 // database keeps only its SHA-256 hash, so a leaked table gives no usable token.
 import crypto from "node:crypto";
-import type { CookieOptions } from "express";
+import type { CookieOptions, Response } from "express";
 import type { Role } from "@prisma/client";
 import { prisma } from "../db";
 
@@ -31,9 +31,17 @@ export function sessionCookieOptions(nodeEnv: string, ttlHours: number): CookieO
   };
 }
 
-// Returns the raw token for the cookie.
+// clearCookie must match the attributes the cookie was set with, minus its lifetime.
+export function clearSessionCookie(res: Response, nodeEnv: string): void {
+  const { maxAge: _maxAge, ...options } = sessionCookieOptions(nodeEnv, 1);
+  res.clearCookie(SESSION_COOKIE, options);
+}
+
+// Returns the raw token for the cookie. Also deletes every expired session, so
+// sessions abandoned without logout do not pile up (F-01 v2, AC-01-14).
 export async function createSession(userId: string, ttlHours: number): Promise<string> {
   const token = crypto.randomBytes(32).toString("base64url");
+  await prisma.session.deleteMany({ where: { expiresAt: { lte: new Date() } } });
   await prisma.session.create({
     data: { id: hashToken(token), userId, expiresAt: new Date(Date.now() + ttlHours * 3600 * 1000) },
   });

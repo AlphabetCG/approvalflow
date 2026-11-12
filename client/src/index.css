@@ -22,6 +22,16 @@ header > span {
   margin-left: auto;
 }
 
+header {
+  flex-wrap: wrap;
+}
+
+/* "Sign out failed": its own row, so it is never pushed off a narrow screen. */
+header > [role="alert"] {
+  flex-basis: 100%;
+  text-align: right;
+}
+
 main {
   max-width: 960px;
   margin: 0 auto;
@@ -91,4 +101,11 @@ header nav {
   padding: 0;
   border: 0;
   min-width: 0;
+}
+
+/* F-01: shown on the login page after a session ends on its own. */
+.notice {
+  padding: 0.75rem;
+  background: #fff8c5;
+  border: 1px solid #d4a72c;
 }

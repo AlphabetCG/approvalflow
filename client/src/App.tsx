@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { BrowserRouter, Link, Route, Routes } from "react-router";
 import { AuthProvider, ROLE_LABELS, useAuth } from "./auth/AuthContext";
 import LoginPage from "./auth/LoginPage";
@@ -7,7 +8,18 @@ import NewRequestPage from "./requests/NewRequestPage";
 //   <Route path="/requests/new" element={<NewRequestPage />} />   // F-02
 function SignedInApp() {
   const { user, logout } = useAuth();
+  const [signOutError, setSignOutError] = useState<string | null>(null);
   if (!user) return null;
+
+  async function signOut() {
+    setSignOutError(null);
+    try {
+      await logout();
+    } catch {
+      setSignOutError("Sign out failed. Try again.");
+    }
+  }
+
   return (
     <>
       <header>
@@ -18,9 +30,10 @@ function SignedInApp() {
         <span>
           <span>{user.name}</span> · <span>{ROLE_LABELS[user.role]}</span>
         </span>
-        <button type="button" onClick={() => void logout()}>
+        <button type="button" onClick={() => void signOut()}>
           Sign out
         </button>
+        {signOutError && <p role="alert">{signOutError}</p>}
       </header>
       <main>
         <Routes>

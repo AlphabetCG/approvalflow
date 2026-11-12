@@ -2,7 +2,14 @@
 import { Router } from "express";
 import { requireAuth } from "../auth/middleware";
 import { verifyAgainstDummy, verifyPassword } from "../auth/password";
-import { AUTH_USER_SELECT, SESSION_COOKIE, createSession, deleteSession, sessionCookieOptions } from "../auth/session";
+import {
+  AUTH_USER_SELECT,
+  SESSION_COOKIE,
+  clearSessionCookie,
+  createSession,
+  deleteSession,
+  sessionCookieOptions,
+} from "../auth/session";
 import type { Config } from "../config";
 import { prisma } from "../db";
 import { HttpError, badRequest } from "../http";
@@ -12,8 +19,6 @@ const invalidCredentials = () => new HttpError(401, "INVALID_CREDENTIALS", "Emai
 export function authRouter(config: Config): Router {
   const router = Router();
   const cookieOptions = sessionCookieOptions(config.nodeEnv, config.sessionTtlHours);
-  // clearCookie must match the attributes the cookie was set with, minus its lifetime.
-  const { maxAge: _maxAge, ...clearOptions } = cookieOptions;
 
   router.post("/login", async (req, res) => {
     const { email, password } = (req.body ?? {}) as Record<string, unknown>;
@@ -40,7 +45,7 @@ export function authRouter(config: Config): Router {
   router.post("/logout", async (req, res) => {
     const token: unknown = req.cookies?.[SESSION_COOKIE];
     if (typeof token === "string" && token !== "") await deleteSession(token);
-    res.clearCookie(SESSION_COOKIE, clearOptions);
+    clearSessionCookie(res, config.nodeEnv);
     res.status(204).end();
   });
 
