@@ -70,3 +70,6 @@ Excluded: real payments, email notifications, self-registration, password recove
 | D-07 | Emails are case-insensitive, stored in lower case (see F-01) | Accepted (PR #11 review, 2026-11-11) |
 | D-08 | User ids are cuid strings (see F-01) | Accepted (PR #11 review, 2026-11-11) |
 | D-09 | Sprint 1 roles are REQUESTER and REVIEWER; ADMIN comes in Sprint 2 (see F-01) | Accepted (PR #11 review, 2026-11-11) |
+| D-10 | A request is readable only by its requester and its assigned reviewer; anyone else gets 404, same as an unknown id (see F-03) | Proposed |
+| D-11 | "My requests" lists only the requests the user submitted, newest first (see F-03) | Proposed |
+| D-12 | No paging in Sprint 1; the list is wrapped in `{ "requests": [...] }` so paging can be added in F-08 (see F-03) | Proposed |
