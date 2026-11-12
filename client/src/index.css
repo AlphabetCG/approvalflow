@@ -22,6 +22,16 @@ header > span {
   margin-left: auto;
 }
 
+header {
+  flex-wrap: wrap;
+}
+
+/* "Sign out failed": its own row, so it is never pushed off a narrow screen. */
+header > [role="alert"] {
+  flex-basis: 100%;
+  text-align: right;
+}
+
 main {
   max-width: 960px;
   margin: 0 auto;
