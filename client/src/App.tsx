@@ -8,6 +8,7 @@ import RequestDetailPage from "./requests/RequestDetailPage";
 
 // Signed-in pages. Each feature adds its route here, for example:
 //   <Route path="/requests/new" element={<NewRequestPage />} />   // F-02
+//   <Route path="/requests/:id" element={<RequestDetailPage />} />  // F-03
 function SignedInApp() {
   const { user, logout } = useAuth();
   const [signOutError, setSignOutError] = useState<string | null>(null);
@@ -27,6 +28,7 @@ function SignedInApp() {
       <header>
         <strong>ApprovalFlow</strong>
         <nav>
+          <Link to="/requests">My requests</Link>
           <Link to="/requests/new">New request</Link>
         </nav>
         <span>

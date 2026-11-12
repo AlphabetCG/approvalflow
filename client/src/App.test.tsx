@@ -32,6 +32,9 @@ function mockApi(routes: Record<string, Response[]>) {
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  // BrowserRouter uses the real URL; start every test at "/" so a page left
+  // open by one test (and the API calls it makes) does not leak into the next.
+  window.history.pushState({}, "", "/");
 });
 
 describe("App authentication (F-01)", () => {
