@@ -121,6 +121,59 @@ describe("GET /api/auth/me", () => {
   });
 });
 
+describe("session cleanup (F-01 v2)", () => {
+  // T-01-20 (AC-01-14)
+  it("deletes expired sessions of any user when someone logs in", async () => {
+    const other = await createUser();
+    const past = new Date(Date.now() - 1000);
+    await prisma.session.createMany({
+      data: [
+        { id: hashToken("old-1"), userId: other.id, expiresAt: past },
+        { id: hashToken("old-2"), userId: other.id, expiresAt: past },
+      ],
+    });
+    const stillValid = { id: hashToken("still-valid"), userId: other.id, expiresAt: new Date(Date.now() + 3600_000) };
+    await prisma.session.create({ data: stillValid });
+    const me = await createUser();
+
+    const res = await request(app).post("/api/auth/login").send({ email: me.email, password: me.password });
+
+    expect(res.status).toBe(200);
+    const left = await prisma.session.findMany({ select: { id: true, userId: true } });
+    expect(left.map((s) => s.id)).not.toContain(hashToken("old-1"));
+    expect(left.map((s) => s.id)).not.toContain(hashToken("old-2"));
+    expect(left.map((s) => s.id)).toContain(stillValid.id);
+    expect(left.filter((s) => s.userId === me.id)).toHaveLength(1);
+  });
+
+  // T-01-21 (AC-01-14)
+  it("clears the cookie when the session is unknown", async () => {
+    const res = await request(app).get("/api/auth/me").set("Cookie", "af_session=garbage");
+    expect(res.status).toBe(401);
+    expect(sessionCookie(res)).toMatch(/^af_session=;/);
+  });
+
+  it("clears the cookie when the session has expired", async () => {
+    const user = await createUser();
+    const agent = request.agent(app);
+    await loginAs(agent, user);
+    await prisma.session.updateMany({ data: { expiresAt: new Date(Date.now() - 1000) } });
+
+    const res = await agent.get("/api/auth/me");
+
+    expect(res.status).toBe(401);
+    expect(sessionCookie(res)).toMatch(/^af_session=;/);
+  });
+
+  it("does not touch the cookie for a valid session", async () => {
+    const agent = request.agent(app);
+    await loginAs(agent, await createUser());
+    const res = await agent.get("/api/auth/me");
+    expect(res.status).toBe(200);
+    expect(sessionCookie(res)).toBeUndefined();
+  });
+});
+
 describe("POST /api/auth/logout", () => {
   // T-01-08 (AC-01-5)
   it("deletes the session so the old cookie no longer works", async () => {

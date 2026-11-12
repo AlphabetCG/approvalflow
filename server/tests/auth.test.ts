@@ -1,6 +1,29 @@
-import { describe, expect, it } from "vitest";
-import { hashPassword, verifyPassword } from "../src/auth/password";
+import bcrypt from "bcryptjs";
+import { describe, expect, it, vi } from "vitest";
+import { DUMMY_HASH, hashPassword, verifyPassword } from "../src/auth/password";
 import { hashToken, sessionCookieOptions } from "../src/auth/session";
+
+describe("dummy hash for unknown emails", () => {
+  // T-01-22 (AC-01-2): same cost as real hashes, so timing does not reveal unknown emails.
+  it("is a valid bcrypt cost-12 hash", () => {
+    expect(DUMMY_HASH).toMatch(/^\$2[aby]\$12\$[./A-Za-z0-9]{53}$/);
+    expect(bcrypt.getRounds(DUMMY_HASH)).toBe(12);
+  });
+
+  it("is a literal, so loading the module does no hashing", async () => {
+    const hashSync = vi.spyOn(bcrypt, "hashSync");
+    const hash = vi.spyOn(bcrypt, "hash");
+    try {
+      vi.resetModules();
+      await import("../src/auth/password");
+      expect(hashSync).not.toHaveBeenCalled();
+      expect(hash).not.toHaveBeenCalled();
+    } finally {
+      hashSync.mockRestore();
+      hash.mockRestore();
+    }
+  });
+});
 
 describe("passwords", () => {
   // T-01-01

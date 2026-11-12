@@ -11,7 +11,7 @@ export async function verifyPassword(plain: string, hash: string): Promise<boole
 
 // Compared against when the email is unknown, so a failed login takes about as
 // long whether or not the account exists.
-const DUMMY_HASH = bcrypt.hashSync("dummy-password-for-timing", 12);
+export const DUMMY_HASH = bcrypt.hashSync("dummy-password-for-timing", 12);
 
 export async function verifyAgainstDummy(plain: string): Promise<void> {
   await bcrypt.compare(plain, DUMMY_HASH);
