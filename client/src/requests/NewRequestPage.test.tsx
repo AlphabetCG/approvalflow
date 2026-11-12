@@ -1,5 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import NewRequestPage from "./NewRequestPage";
 
@@ -24,6 +25,14 @@ async function fillValid(user: ReturnType<typeof userEvent.setup>) {
 
 const submit = () => screen.getByRole("button", { name: "Submit request" });
 
+// The confirmation links to the new request (F-03), so the form needs a router.
+const renderPage = () =>
+  render(
+    <MemoryRouter>
+      <NewRequestPage />
+    </MemoryRouter>,
+  );
+
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -32,7 +41,7 @@ describe("NewRequestPage (F-02)", () => {
   // T-02-16 (AC-02-9)
   it("shows a message beside each empty field and does not call the API", async () => {
     const fetchMock = mockFetch();
-    render(<NewRequestPage />);
+    renderPage();
     const user = userEvent.setup();
 
     await user.click(submit());
@@ -50,7 +59,7 @@ describe("NewRequestPage (F-02)", () => {
     ["1.234", "Amount must have at most 2 decimal places"],
   ])("rejects the amount %s before calling the API", async (amount, message) => {
     const fetchMock = mockFetch();
-    render(<NewRequestPage />);
+    renderPage();
     const user = userEvent.setup();
     await fillValid(user);
     await user.clear(screen.getByLabelText("Amount (THB)"));
@@ -76,7 +85,7 @@ describe("NewRequestPage (F-02)", () => {
         reviewer: { id: "u2", email: "chai@example.com" },
       }),
     );
-    render(<NewRequestPage />);
+    renderPage();
     const user = userEvent.setup();
     await fillValid(user);
 
@@ -84,6 +93,8 @@ describe("NewRequestPage (F-02)", () => {
 
     expect(await screen.findByRole("status")).toHaveTextContent(/SUBMITTED/);
     expect(screen.getByRole("status")).toHaveTextContent(/chai@example\.com/);
+    // T-03-15 (AC-03-3)
+    expect(screen.getByRole("link", { name: "View request" })).toHaveAttribute("href", "/requests/r1");
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const [url, init] = fetchMock.mock.calls[0] as unknown as [string, RequestInit];
     expect(url).toBe("/api/requests");
@@ -99,7 +110,7 @@ describe("NewRequestPage (F-02)", () => {
   it("disables the button while submitting, so a double click sends one request", async () => {
     let answer!: (res: Response) => void;
     const fetchMock = mockFetch(new Promise<Response>((resolve) => (answer = resolve)));
-    render(<NewRequestPage />);
+    renderPage();
     const user = userEvent.setup();
     await fillValid(user);
 
@@ -117,7 +128,7 @@ describe("NewRequestPage (F-02)", () => {
   it("locks every field while submitting, so no edit is lost when the form resets", async () => {
     let answer!: (res: Response) => void;
     mockFetch(new Promise<Response>((resolve) => (answer = resolve)));
-    render(<NewRequestPage />);
+    renderPage();
     const user = userEvent.setup();
     await fillValid(user);
 
@@ -145,7 +156,7 @@ describe("NewRequestPage (F-02)", () => {
   // T-02-17 (AC-02-9)
   it("shows the API message on 409 and keeps what the user typed", async () => {
     mockFetch(json(409, { error: "CONFLICT", message: "No reviewer is available in your department" }));
-    render(<NewRequestPage />);
+    renderPage();
     const user = userEvent.setup();
     await fillValid(user);
 
@@ -170,7 +181,7 @@ describe("NewRequestPage (F-02)", () => {
         ],
       }),
     );
-    render(<NewRequestPage />);
+    renderPage();
     const user = userEvent.setup();
     await fillValid(user);
 

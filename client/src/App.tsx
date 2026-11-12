@@ -2,7 +2,9 @@ import { useState } from "react";
 import { BrowserRouter, Link, Route, Routes } from "react-router";
 import { AuthProvider, ROLE_LABELS, useAuth } from "./auth/AuthContext";
 import LoginPage from "./auth/LoginPage";
+import MyRequestsPage from "./requests/MyRequestsPage";
 import NewRequestPage from "./requests/NewRequestPage";
+import RequestDetailPage from "./requests/RequestDetailPage";
 
 // Signed-in pages. Each feature adds its route here, for example:
 //   <Route path="/requests/new" element={<NewRequestPage />} />   // F-02
@@ -37,7 +39,9 @@ function SignedInApp() {
       </header>
       <main>
         <Routes>
+          <Route path="/requests" element={<MyRequestsPage />} />
           <Route path="/requests/new" element={<NewRequestPage />} />
+          <Route path="/requests/:id" element={<RequestDetailPage />} />
           <Route path="*" element={<p>Welcome, {user.name}.</p>} />
         </Routes>
       </main>
