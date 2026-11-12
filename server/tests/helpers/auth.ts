@@ -4,7 +4,7 @@
 //   const agent = request.agent(app);
 //   await loginAs(agent, reviewer);      // agent now sends the session cookie
 //   await agent.get("/api/reviews/queue");
-import bcrypt from "bcryptjs";
+import { hashPassword } from "../../src/auth/password";
 import type { Role, User } from "@prisma/client";
 import type TestAgent from "supertest/lib/agent";
 import { prisma } from "./db";
@@ -27,7 +27,7 @@ export async function createUser(
       role: overrides.role ?? "REQUESTER",
       department: overrides.department ?? "ENGINEERING",
       // Low cost keeps tests fast; login reads the cost from the hash.
-      passwordHash: await bcrypt.hash(password, 4),
+      passwordHash: await hashPassword(password, 4),
     },
   });
   return { ...user, password };

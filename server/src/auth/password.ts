@@ -10,8 +10,9 @@ export async function verifyPassword(plain: string, hash: string): Promise<boole
 }
 
 // Compared against when the email is unknown, so a failed login takes about as
-// long whether or not the account exists.
-export const DUMMY_HASH = bcrypt.hashSync("dummy-password-for-timing", 12);
+// long whether or not the account exists. A precomputed cost-12 hash (of a
+// throwaway string), so starting the server does no hashing.
+export const DUMMY_HASH = "$2b$12$gnwmLrBg9d.ggkJuRQk3y.v2vA/uDA53SUEcZSyMAeiBD91LnZLsi";
 
 export async function verifyAgainstDummy(plain: string): Promise<void> {
   await bcrypt.compare(plain, DUMMY_HASH);
