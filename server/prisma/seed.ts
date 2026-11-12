@@ -1,6 +1,7 @@
 // Reproducible demo data. Must be safe to rerun.
 // Demo passwords must come from environment variables, never from this file.
 import { PrismaClient } from "@prisma/client";
+import { seedDemoRequests } from "../src/seed/demo-requests";
 import { seedDemoUsers } from "../src/seed/demo-users";
 
 const prisma = new PrismaClient();
@@ -12,6 +13,8 @@ async function main(): Promise<void> {
       ? "Seed: DEMO_USER_PASSWORD is not set, so no demo users were created."
       : `Seed: ${users.created} demo user(s) created.`,
   );
+  const requests = await seedDemoRequests(prisma);
+  console.log(`Seed: ${requests.created} sample request(s) created.`);
 }
 
 main()

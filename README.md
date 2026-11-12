@@ -46,6 +46,8 @@ The seed creates demo users only when `DEMO_USER_PASSWORD` (8+ characters) is se
 | `req.fin1@example.com` | Requester | FINANCE |
 | `rev.fin1@example.com`, `rev.fin2@example.com` | Reviewer | FINANCE |
 
+After the users, the seed submits 4 sample requests (F-02) through the real reviewer assignment, one of them by `rev.eng1` so it goes to `rev.eng2`. Rerunning it adds none.
+
 In API tests, use `createUser()` and `loginAs()` from `server/tests/helpers/auth.ts` instead of the seed.
 
 ### Database port

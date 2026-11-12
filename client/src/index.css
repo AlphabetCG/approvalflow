@@ -56,3 +56,39 @@ button {
   margin: 0;
   color: #cf222e;
 }
+
+/* F-02 forms */
+.form-page {
+  max-width: 560px;
+}
+
+.field-error {
+  margin-top: -0.5rem;
+  color: #cf222e;
+  font-size: 0.875rem;
+}
+
+[aria-invalid="true"] {
+  border-color: #cf222e;
+}
+
+header nav {
+  display: flex;
+  gap: 1rem;
+}
+
+[role="status"].success {
+  padding: 0.75rem;
+  background: #dafbe1;
+  border: 1px solid #4ac26b;
+}
+
+/* Groups the form fields so one `disabled` locks them all while submitting. */
+.form-fields {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
