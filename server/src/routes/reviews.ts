@@ -1,9 +1,10 @@
-// F-04: GET /api/reviews/queue. STUB: real implementation follows the failing tests.
+// F-04: GET /api/reviews/queue
 import { Router } from "express";
-import { HttpError } from "../http";
+import { requireRole } from "../auth/middleware";
+import { listQueue } from "../requests/decide";
 
 export const reviewsRouter = Router();
 
-reviewsRouter.get("/queue", () => {
-  throw new HttpError(501, "NOT_IMPLEMENTED", "Not implemented yet");
+reviewsRouter.get("/queue", requireRole("REVIEWER"), async (req, res) => {
+  res.json({ requests: await listQueue(req.user!.id) });
 });

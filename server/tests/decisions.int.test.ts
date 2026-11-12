@@ -219,16 +219,32 @@ describe("POST /api/requests/:id/approve and /reject", () => {
   });
 
   // T-04-12 (AC-04-9, BR-07)
+  // Without help the two calls rarely overlap, so a missing guard would pass most
+  // runs. A temporary trigger makes every UPDATE of "Request" wait 0.5 s while
+  // holding the row lock: both calls read SUBMITTED before either commits, and
+  // only the conditional update (WHERE status = 'SUBMITTED') can stop the second.
   it("lets only one of two simultaneous approvals succeed", async () => {
     const r = await makeRequest(requester, reviewer);
     const [a, b] = [await signedIn(reviewer), await signedIn(reviewer)];
+    await prisma.$executeRawUnsafe(`
+      CREATE FUNCTION slow_request_update() RETURNS trigger LANGUAGE plpgsql AS $$
+      BEGIN PERFORM pg_sleep(0.5); RETURN NEW; END $$`);
+    await prisma.$executeRawUnsafe(`
+      CREATE TRIGGER slow_request_update BEFORE UPDATE ON "Request"
+      FOR EACH ROW EXECUTE FUNCTION slow_request_update()`);
+    try {
+      const results = await Promise.all([
+        a.post(`/api/requests/${r.id}/approve`).send({}),
+        b.post(`/api/requests/${r.id}/approve`).send({}),
+      ]);
 
-    const results = await Promise.all([
-      a.post(`/api/requests/${r.id}/approve`).send({}),
-      b.post(`/api/requests/${r.id}/approve`).send({}),
-    ]);
-
-    expect(results.map((res) => res.status).sort()).toEqual([200, 409]);
-    expect(await state(r.id)).toEqual({ status: "APPROVED", decisions: 1 });
+      expect(results.map((res) => res.status).sort()).toEqual([200, 409]);
+      const loser = results.find((res) => res.status === 409)!;
+      expect(loser.body).toEqual({ error: "CONFLICT", message: "This request was decided by someone else" });
+      expect(await state(r.id)).toEqual({ status: "APPROVED", decisions: 1 });
+    } finally {
+      await prisma.$executeRawUnsafe(`DROP TRIGGER slow_request_update ON "Request"`);
+      await prisma.$executeRawUnsafe(`DROP FUNCTION slow_request_update()`);
+    }
   });
 });
