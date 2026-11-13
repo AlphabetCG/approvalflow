@@ -14,7 +14,8 @@ type State =
 
 const person = (u: UserRef) => `${u.name} (${u.email})`;
 
-export default function RequestDetailPage() {
+// currentUserId: the signed-in user, to decide whether the Decision section shows (F-04b).
+export default function RequestDetailPage(_props: { currentUserId: string }) {
   const { id = "" } = useParams();
   const [state, setState] = useState<State>({ kind: "loading" });
 

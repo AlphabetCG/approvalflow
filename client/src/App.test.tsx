@@ -126,6 +126,27 @@ describe("App authentication (F-01)", () => {
     expect(await screen.findByText(/You have not submitted any requests yet\./)).toBeInTheDocument();
   });
 
+  // T-04-16 (AC-04-10): only a reviewer gets the queue link.
+  it("shows the Review queue link to a reviewer and opens the queue", async () => {
+    mockApi({
+      "GET /api/auth/me": [json(200, { user: { ...alice, role: "REVIEWER" } })],
+      "GET /api/reviews/queue": [json(200, { requests: [] })],
+    });
+    render(<App />);
+    const user = userEvent.setup();
+    await user.click(await screen.findByRole("link", { name: "Review queue" }));
+    expect(await screen.findByRole("heading", { name: "Review queue" })).toBeInTheDocument();
+    expect(await screen.findByText("Nothing to review.")).toBeInTheDocument();
+  });
+
+  // T-04-16 (AC-04-10)
+  it("does not show the Review queue link to a requester", async () => {
+    mockApi({ "GET /api/auth/me": [json(200, { user: alice })] });
+    render(<App />);
+    expect(await screen.findByRole("link", { name: "My requests" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Review queue" })).not.toBeInTheDocument();
+  });
+
   it("skips the login form when a session already exists", async () => {
     mockApi({ "GET /api/auth/me": [json(200, { user: { ...alice, name: "Bob", role: "REVIEWER" } })] });
     render(<App />);
