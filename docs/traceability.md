@@ -27,8 +27,11 @@ Requirement → feature → sprint → acceptance criterion → planned test →
 | BR-06 | F-04 | 1 | AC-04-8, AC-04-9 | T-04-11, T-04-12 | `server/tests/decisions.int.test.ts` (one decision row) | PASS (API + DB) | 28cfccd |
 | BR-07 | F-04 | 1 | AC-04-9 | T-04-12 | `server/tests/decisions.int.test.ts` (simultaneous approvals, forced overlap) | PASS (API + DB) | 28cfccd |
 | NFR-03 | F-04 | 1 | AC-04-6, AC-04-7 | T-04-09, T-04-10 | `server/tests/decisions.int.test.ts` (404 / 403 / 401) | PASS (API + DB) | 28cfccd |
-| FR-06 | F-04 | 1 | AC-04-2, AC-04-3 | T-04-13 | (needs F-03 on `staging`) | _not run_ | |
-| FR-05, FR-06 | F-04 | 1 | UI | T-04-14+ | F-04b (#6) | _not written_ | |
+| FR-06 | F-04 | 1 | AC-04-2, AC-04-3 | T-04-13 | No automated test; checked by hand with `curl` on the merge of #14 and #15 (PR #15 review) | PASS (manual) | 805d217 |
+| FR-05 | F-04 | 1 | AC-04-10 | T-04-14, T-04-15 | `client/src/reviews/ReviewQueuePage.test.tsx` | PASS (component) | 4d629e9 |
+| FR-05 | F-04 | 1 | AC-04-10 | T-04-16 | `client/src/App.test.tsx` (Review queue link by role) | PASS (component) | 4d629e9 |
+| FR-06 | F-04 | 1 | AC-04-11 | T-04-17, T-04-18, T-04-22 | `client/src/requests/RequestDetailPage.decision.test.tsx` (who sees the section, reason checks, 400) | PASS (component) | 4d629e9 |
+| FR-06, FR-07 | F-04 | 1 | AC-04-12 | T-04-19, T-04-20, T-04-21 | `client/src/requests/RequestDetailPage.decision.test.tsx` (approve, reject, 409 reload) | PASS (component) | 4d629e9 |
 | BR-04 | F-02 | 1 | AC-02-2 | T-02-01, T-02-02 | `server/tests/request-validation.test.ts` (amount cases) | PASS (unit) | eb53ec6 |
 | BR-04 | F-02 | 1 | AC-02-2 | T-02-09 | `server/tests/requests.int.test.ts` (POST /api/requests, 400 cases) | PASS (API + DB) | eb53ec6 |
 | BR-04 | F-02 | 1 | AC-02-2 | T-02-18 | `server/tests/requests.int.test.ts` (Request table constraints) | PASS (DB) | eb53ec6 |
