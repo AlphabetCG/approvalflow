@@ -31,6 +31,8 @@ function SignedInApp() {
         <nav>
           <Link to="/requests">My requests</Link>
           <Link to="/requests/new">New request</Link>
+          {/* F-04b: only the links the role can use; the API still enforces every rule. */}
+          {user.role === "REVIEWER" && <Link to="/reviews">Review queue</Link>}
         </nav>
         <span>
           <span>{user.name}</span> · <span>{ROLE_LABELS[user.role]}</span>
