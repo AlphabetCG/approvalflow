@@ -8,3 +8,6 @@ coverage/
 !.env.*.example
 gha-creds-*.json
 .DS_Store
+
+# TypeScript incremental build info (tsc -b)
+*.tsbuildinfo
