@@ -1,6 +1,7 @@
 // F-02: "New request" form (contract UI section, AC-02-9).
 import { useState, type FormEvent, type ReactNode } from "react";
-import { ApiError, api } from "../api";
+import { Link } from "react-router";
+import { ApiError, api, errorMessage } from "../api";
 import {
   CATEGORIES,
   MAX_DESCRIPTION_LENGTH,
@@ -20,11 +21,6 @@ interface SubmittedRequest {
 
 const EMPTY: NewRequestForm = { title: "", category: "", amount: "", description: "" };
 const FIELDS: readonly string[] = ["title", "category", "amount", "description"];
-
-function errorMessage(err: unknown): string {
-  if (err instanceof ApiError) return err.message;
-  return "Cannot reach the server. Try again.";
-}
 
 // Label, control and the message beside it; the message is the control's accessible description.
 function FieldRow({ id, label, error, children }: { id: Field; label: string; error?: string; children: ReactNode }) {
@@ -90,7 +86,8 @@ export default function NewRequestPage() {
       <h1>New request</h1>
       {created && (
         <p role="status" className="success">
-          Request submitted. Status: {created.status}. Reviewer: {created.reviewer.email}.
+          Request submitted. Status: {created.status}. Reviewer: {created.reviewer.email}.{" "}
+          <Link to={`/requests/${created.id}`}>View request</Link>
         </p>
       )}
       <form onSubmit={onSubmit} noValidate>

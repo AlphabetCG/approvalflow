@@ -46,3 +46,10 @@ let onUnauthorized: (() => void) | null = null;
 export function setUnauthorizedHandler(handler: (() => void) | null): void {
   onUnauthorized = handler;
 }
+
+// The message to show for a failed call: the API's own, or a generic one when
+// the server could not be reached.
+export function errorMessage(err: unknown): string {
+  if (err instanceof ApiError) return err.message;
+  return "Cannot reach the server. Try again.";
+}

@@ -109,3 +109,100 @@ header nav {
   background: #fff8c5;
   border: 1px solid #d4a72c;
 }
+
+/* F-03: My requests and request detail */
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+th,
+td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #d0d7de;
+  text-align: left;
+  white-space: nowrap;
+}
+
+td:first-child {
+  white-space: normal;
+}
+
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.status {
+  display: inline-block;
+  padding: 0 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border: 1px solid #d0d7de;
+}
+
+.status-submitted {
+  background: #ddf4ff;
+  border-color: #54aeff;
+}
+
+.status-approved {
+  background: #dafbe1;
+  border-color: #4ac26b;
+}
+
+.status-rejected {
+  background: #ffebe9;
+  border-color: #ff8182;
+}
+
+.request-detail dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.5rem 1rem;
+  margin: 0;
+}
+
+.request-detail dt {
+  font-weight: 600;
+}
+
+.request-detail dd {
+  margin: 0;
+}
+
+.description {
+  white-space: pre-wrap;
+}
+
+.history {
+  padding-left: 1.25rem;
+}
+
+.history li {
+  margin-bottom: 0.5rem;
+}
+
+.reason {
+  margin: 0.25rem 0 0;
+}
+
+.breadcrumb {
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  .request-detail dl {
+    grid-template-columns: 1fr;
+  }
+
+  .request-detail dd {
+    margin-bottom: 0.5rem;
+  }
+}

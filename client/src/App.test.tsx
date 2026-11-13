@@ -32,6 +32,9 @@ function mockApi(routes: Record<string, Response[]>) {
 
 afterEach(() => {
   vi.unstubAllGlobals();
+  // BrowserRouter uses the real URL; start every test at "/" so a page left
+  // open by one test (and the API calls it makes) does not leak into the next.
+  window.history.pushState({}, "", "/");
 });
 
 describe("App authentication (F-01)", () => {
@@ -108,6 +111,19 @@ describe("App authentication (F-01)", () => {
     await user.click(await screen.findByRole("link", { name: "New request" }));
     expect(await screen.findByRole("heading", { name: "New request" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Submit request" })).toBeInTheDocument();
+  });
+
+  // T-03-14 (AC-03-1): the header links to My requests.
+  it("opens My requests from the header", async () => {
+    mockApi({
+      "GET /api/auth/me": [json(200, { user: alice })],
+      "GET /api/requests/mine": [json(200, { requests: [] })],
+    });
+    render(<App />);
+    const user = userEvent.setup();
+    await user.click(await screen.findByRole("link", { name: "My requests" }));
+    expect(await screen.findByRole("heading", { name: "My requests" })).toBeInTheDocument();
+    expect(await screen.findByText(/You have not submitted any requests yet\./)).toBeInTheDocument();
   });
 
   it("skips the login form when a session already exists", async () => {
