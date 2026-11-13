@@ -18,7 +18,17 @@ Requirement → feature → sprint → acceptance criterion → planned test →
 | NFR-01 | F-01 | 1 | AC-01-13 | T-01-18, T-01-19 | `client/src/App.test.tsx` (App session edge cases, 401) | PASS (component) | 2a54443 |
 | NFR-01 | F-01 | 1 | AC-01-14 | T-01-20, T-01-21 | `server/tests/auth.int.test.ts` (session cleanup) | PASS (API + DB) | 31036a1 |
 | FR-01 | F-01 | 1 | AC-01-2 | T-01-22 | `server/tests/auth.test.ts` (dummy hash for unknown emails) | PASS (unit) | 31036a1 |
-| BR-01 | F-04 | 1 | _TODO_ | _TODO_ | | | |
+| FR-05 | F-04 | 1 | AC-04-1 | T-04-04 | `server/tests/decisions.int.test.ts` (GET /api/reviews/queue) | PASS (API + DB) | 28cfccd |
+| FR-06 | F-04 | 1 | AC-04-2, AC-04-3 | T-04-05, T-04-06 | `server/tests/decisions.int.test.ts` (approve / reject) | PASS (API + DB) | 28cfccd |
+| FR-07 | F-04 | 1 | AC-04-2, AC-04-3 | T-04-05, T-04-06 | `server/tests/decisions.int.test.ts` (history row per decision) | PASS (API + DB) | 28cfccd |
+| BR-01 | F-04 | 1 | AC-04-5 | T-04-08 | `server/tests/decisions.int.test.ts` (own request) | PASS (API + DB) | 28cfccd |
+| BR-02 | F-04 | 1 | AC-04-8 | T-04-01, T-04-11 | `server/tests/decisions.test.ts` (nextStatus); `server/tests/decisions.int.test.ts` (409 cases) | PASS (unit, API + DB) | 28cfccd |
+| BR-03 | F-04 | 1 | AC-04-4 | T-04-02, T-04-03, T-04-07 | `server/tests/decisions.test.ts` (validateDecision); `server/tests/decisions.int.test.ts` (400 cases) | PASS (unit, API + DB) | 28cfccd |
+| BR-06 | F-04 | 1 | AC-04-8, AC-04-9 | T-04-11, T-04-12 | `server/tests/decisions.int.test.ts` (one decision row) | PASS (API + DB) | 28cfccd |
+| BR-07 | F-04 | 1 | AC-04-9 | T-04-12 | `server/tests/decisions.int.test.ts` (simultaneous approvals, forced overlap) | PASS (API + DB) | 28cfccd |
+| NFR-03 | F-04 | 1 | AC-04-6, AC-04-7 | T-04-09, T-04-10 | `server/tests/decisions.int.test.ts` (404 / 403 / 401) | PASS (API + DB) | 28cfccd |
+| FR-06 | F-04 | 1 | AC-04-2, AC-04-3 | T-04-13 | (needs F-03 on `staging`) | _not run_ | |
+| FR-05, FR-06 | F-04 | 1 | UI | T-04-14+ | F-04b (#6) | _not written_ | |
 | BR-04 | F-02 | 1 | AC-02-2 | T-02-01, T-02-02 | `server/tests/request-validation.test.ts` (amount cases) | PASS (unit) | eb53ec6 |
 | BR-04 | F-02 | 1 | AC-02-2 | T-02-09 | `server/tests/requests.int.test.ts` (POST /api/requests, 400 cases) | PASS (API + DB) | eb53ec6 |
 | BR-04 | F-02 | 1 | AC-02-2 | T-02-18 | `server/tests/requests.int.test.ts` (Request table constraints) | PASS (DB) | eb53ec6 |
