@@ -237,3 +237,9 @@ button.danger {
   background: #cf222e;
   border: 1px solid #a40e26;
 }
+
+/* F-04b: space around the decision result above the details */
+.request-detail > [role="alert"],
+.request-detail > [role="status"] {
+  margin: 0 0 1rem;
+}
