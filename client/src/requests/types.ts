@@ -38,3 +38,20 @@ export interface RequestDetail {
   reviewer: UserRef;
   history: HistoryEntry[];
 }
+
+// F-04: one row of GET /api/reviews/queue.
+export interface QueueItem {
+  id: string;
+  title: string;
+  category: string;
+  amount: string;
+  submittedAt: string;
+  requester: UserRef;
+}
+
+// F-04: response of POST /api/requests/:id/approve and /reject.
+export interface Decision {
+  id: string;
+  status: string;
+  decision: HistoryEntry;
+}

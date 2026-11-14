@@ -51,7 +51,7 @@ const renderAt = (path: string) =>
   render(
     <MemoryRouter initialEntries={[path]}>
       <Routes>
-        <Route path="/requests/:id" element={<RequestDetailPage />} />
+        <Route path="/requests/:id" element={<RequestDetailPage currentUserId="u1" />} />
       </Routes>
     </MemoryRouter>,
   );
