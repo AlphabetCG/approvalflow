@@ -52,5 +52,9 @@ Requirement → feature → sprint → acceptance criterion → planned test →
 | FR-07 | F-03 | 1 | AC-03-5 | T-03-07 | `server/tests/my-requests.int.test.ts` (history oldest first) | PASS (API + DB) | f4b33ba |
 | NFR-03 | F-03 | 1 | AC-03-4 | T-03-05, T-03-06 | `server/tests/my-requests.int.test.ts` (404 for others and unknown ids) | PASS (API + DB) | f4b33ba |
 | NFR-01 | F-03 | 1 | AC-03-6 | T-03-08 | `server/tests/my-requests.int.test.ts` (without a session) | PASS (API + DB) | f4b33ba |
+| FR-01..FR-07 | F-01..F-04 | 1 | AC-01-1, AC-02-1, AC-03-3, AC-04-1, AC-04-2, AC-04-11 | E2E-01 | `e2e/tests/sprint1.spec.ts` (approve journey) | PASS (E2E) | ce29a4e |
+| BR-03 | F-04 | 1 | AC-04-3, AC-04-4, AC-04-11 | E2E-02 | `e2e/tests/sprint1.spec.ts` (reject journey) | PASS (E2E) | ce29a4e |
+| NFR-03 | F-03, F-04 | 1 | AC-03-4, AC-04-7, AC-04-10 | E2E-03 | `e2e/tests/sprint1.spec.ts` (access restrictions) | PASS (E2E) | ce29a4e |
+| FR-01 | F-01 | 1 | AC-01-5, AC-01-9 | E2E-04 | `e2e/tests/sprint1.spec.ts` (sign out) | PASS (E2E) | ce29a4e |
 
 Do not mark a row PASS until the test has run on the stated commit.

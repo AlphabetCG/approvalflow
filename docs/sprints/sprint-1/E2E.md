@@ -21,6 +21,6 @@
 
 ## Definition of Done
 
-- [ ] All four journeys pass locally on the release candidate commit, with the run output saved for the D1 report
-- [ ] `npm run test:e2e` documented in the README
-- [ ] Traceability updated
+- [x] All four journeys pass on `ce29a4e` (run saved in `e2e-run-ce29a4e.txt`); re-run on the release commit for #8
+- [x] `npm run test:e2e` documented in the README
+- [x] Traceability updated
