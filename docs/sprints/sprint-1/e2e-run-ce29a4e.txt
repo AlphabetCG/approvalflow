@@ -1,0 +1,14 @@
+Sprint 1 E2E run (Issue #7)
+Commit: ce29a4e
+Date: 2026-11-15T21:34:40+07:00
+Command: cd e2e && npx playwright test
+
+
+Running 4 tests using 1 worker
+
+  ok 1 [chromium] › tests\sprint1.spec.ts:7:1 › E2E-01: requester submits, the assigned reviewer approves, the requester sees it (4.5s)
+  ok 2 [chromium] › tests\sprint1.spec.ts:37:1 › E2E-02: a short reject reason is refused, a valid one rejects the request (4.2s)
+  ok 3 [chromium] › tests\sprint1.spec.ts:65:1 › E2E-03: a requester cannot use the review queue or open someone else's request (2.1s)
+  ok 4 [chromium] › tests\sprint1.spec.ts:85:1 › E2E-04: signing out ends the session, also after a reload (1.4s)
+
+  4 passed (28.2s)

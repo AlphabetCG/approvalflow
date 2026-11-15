@@ -76,6 +76,17 @@ cp server/.env.test.example server/.env.test   # once
 
 `npm test` in `server` runs both kinds. Without a database, `npm run test:unit` runs only the tests that do not need one; `npm run test:integration` runs only the database tests.
 
+### End-to-end tests (Playwright)
+
+The Sprint 1 journeys in [docs/sprints/sprint-1/E2E.md](docs/sprints/sprint-1/E2E.md) run in a real browser against the real server (port 3100) and the same `approvalflow_test` database. Before the run, the setup migrates that database, empties it, and seeds the demo users and sample requests with a throwaway test password. The setup refuses anything except a local `*_test` database. The database must be running. Install `server` and `client` dependencies first.
+
+```bash
+cd e2e && npm install && npx playwright install chromium   # once
+cd e2e && npm run test:e2e                                   # builds the client, starts the server, runs 4 journeys
+```
+
+On failure, `npm run test:e2e:report` opens the HTML report with screenshots and traces.
+
 If you started the database before `scripts/create-test-db.sql` existed, create the test database once (keeps your dev data):
 
 ```bash
