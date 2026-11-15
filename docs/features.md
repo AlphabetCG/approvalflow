@@ -5,7 +5,7 @@
 | ID | Feature | Requirements | Depends on | Sprint |
 |---|---|---|---|---|
 | F-01 | Authentication and session (login, logout, me) | FR-01, NFR-01, NFR-02 | – | 1 |
-| F-02 | Submit request with reviewer assignment | FR-02, FR-03, BR-04 | F-01 | 1 |
+| F-02 | Submit request with reviewer assignment | FR-02, FR-03, FR-07, BR-04, BR-06, NFR-01 | F-01 | 1 |
 | F-03 | My requests list and detail with history | FR-04, FR-07, NFR-03 | F-02 | 1 |
 | F-04 | Reviewer queue and decision (approve/reject) | FR-05, FR-06, FR-07, BR-01, BR-02, BR-03, BR-06, BR-07 | F-02 | 1 |
 | F-05 | Drafts and editing rules | FR-08, BR-05 | F-02 | 2 |

@@ -5,5 +5,13 @@ coverage/
 .env
 .env.*
 !.env.example
+!.env.*.example
 gha-creds-*.json
 .DS_Store
+
+# TypeScript incremental build info (tsc -b)
+*.tsbuildinfo
+
+# Playwright E2E (e2e/)
+e2e/test-results/
+e2e/playwright-report/

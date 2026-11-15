@@ -1,0 +1,245 @@
+:root {
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  color: #1f2328;
+  background: #f6f8fa;
+}
+
+body {
+  margin: 0;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: #fff;
+  border-bottom: 1px solid #d0d7de;
+}
+
+header > span {
+  margin-left: auto;
+}
+
+header {
+  flex-wrap: wrap;
+}
+
+/* "Sign out failed": its own row, so it is never pushed off a narrow screen. */
+header > [role="alert"] {
+  flex-basis: 100%;
+  text-align: right;
+}
+
+main {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.login {
+  max-width: 360px;
+  margin-top: 10vh;
+}
+
+form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+label {
+  display: grid;
+  gap: 0.25rem;
+  font-weight: 600;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+  padding: 0.5rem;
+}
+
+[role="alert"] {
+  margin: 0;
+  color: #cf222e;
+}
+
+/* F-02 forms */
+.form-page {
+  max-width: 560px;
+}
+
+.field-error {
+  margin-top: -0.5rem;
+  color: #cf222e;
+  font-size: 0.875rem;
+}
+
+[aria-invalid="true"] {
+  border-color: #cf222e;
+}
+
+header nav {
+  display: flex;
+  gap: 1rem;
+}
+
+[role="status"].success {
+  padding: 0.75rem;
+  background: #dafbe1;
+  border: 1px solid #4ac26b;
+}
+
+/* Groups the form fields so one `disabled` locks them all while submitting. */
+.form-fields {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+/* F-01: shown on the login page after a session ends on its own. */
+.notice {
+  padding: 0.75rem;
+  background: #fff8c5;
+  border: 1px solid #d4a72c;
+}
+
+/* F-03: My requests and request detail */
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+}
+
+th,
+td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #d0d7de;
+  text-align: left;
+  white-space: nowrap;
+}
+
+td:first-child {
+  white-space: normal;
+}
+
+.num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.status {
+  display: inline-block;
+  padding: 0 0.5rem;
+  border-radius: 1rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border: 1px solid #d0d7de;
+}
+
+.status-submitted {
+  background: #ddf4ff;
+  border-color: #54aeff;
+}
+
+.status-approved {
+  background: #dafbe1;
+  border-color: #4ac26b;
+}
+
+.status-rejected {
+  background: #ffebe9;
+  border-color: #ff8182;
+}
+
+.request-detail dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.5rem 1rem;
+  margin: 0;
+}
+
+.request-detail dt {
+  font-weight: 600;
+}
+
+.request-detail dd {
+  margin: 0;
+}
+
+.description {
+  white-space: pre-wrap;
+}
+
+.history {
+  padding-left: 1.25rem;
+}
+
+.history li {
+  margin-bottom: 0.5rem;
+}
+
+.reason {
+  margin: 0.25rem 0 0;
+}
+
+.breadcrumb {
+  margin: 0;
+}
+
+@media (max-width: 480px) {
+  .request-detail dl {
+    grid-template-columns: 1fr;
+  }
+
+  .request-detail dd {
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* F-04b: Decision section on the request detail page */
+.decision {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+}
+
+.decision h2 {
+  margin-top: 0;
+}
+
+.hint {
+  margin: -0.5rem 0 0;
+  color: #59636e;
+  font-size: 0.875rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+button.danger {
+  color: #fff;
+  background: #cf222e;
+  border: 1px solid #a40e26;
+}
+
+/* F-04b: space around the decision result above the details */
+.request-detail > [role="alert"],
+.request-detail > [role="status"] {
+  margin: 0 0 1rem;
+}

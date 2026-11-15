@@ -22,7 +22,7 @@ Requesters submit requests; assigned reviewers approve, reject, or return them w
 Requirements: Node.js 24, Docker Desktop (for PostgreSQL).
 
 ```bash
-docker compose -f compose.dev.yml up -d        # start PostgreSQL on :5432
+docker compose -f compose.dev.yml up -d        # start PostgreSQL on host port 5433
 cp server/.env.example server/.env             # placeholders work for local dev
 cd server && npm install && npx prisma migrate dev && npm run prisma:seed && npm run dev
 ```
@@ -35,12 +35,79 @@ cd client && npm install && npm run dev        # http://localhost:5173 (proxies 
 
 Check: <http://localhost:3000/api/health> and <http://localhost:3000/api/ready>.
 
+### Demo accounts
+
+The seed creates demo users only when `DEMO_USER_PASSWORD` (8+ characters) is set in `server/.env`. All of them share that password, which you choose yourself and never commit. Rerunning the seed keeps existing users.
+
+| Email | Role | Department |
+|---|---|---|
+| `req.eng1@example.com`, `req.eng2@example.com` | Requester | ENGINEERING |
+| `rev.eng1@example.com`, `rev.eng2@example.com` | Reviewer | ENGINEERING |
+| `req.fin1@example.com` | Requester | FINANCE |
+| `rev.fin1@example.com`, `rev.fin2@example.com` | Reviewer | FINANCE |
+
+After the users, the seed submits 4 sample requests (F-02) through the real reviewer assignment, one of them by `rev.eng1` so it goes to `rev.eng2`. Rerunning it adds none.
+Sign in as any of them and open **My requests** (F-03) to see their own requests and each history.
+Sign in as a reviewer and open **Review queue** (F-04) to approve or reject the requests assigned to you; the requester then sees the decision in My requests.
+
+In API tests, use `createUser()` and `loginAs()` from `server/tests/helpers/auth.ts` instead of the seed.
+
+### Database port
+
+The dev database listens on host port **5433** by default. If something else already uses 5433, `docker compose up` fails with "port is already allocated". If you miss that error, `server/.env` still points at 5433 and Prisma would migrate the *other* PostgreSQL. Check with `docker compose -f compose.dev.yml ps` that the `db` container is running before you migrate. To pick another port:
+
+1. Create a `.env` file in the repository root (it is git-ignored) with `DB_PORT=55433`, or export `DB_PORT` in your shell.
+2. `docker compose -f compose.dev.yml up -d`
+3. Change `5433` to the same port in `server/.env` and `server/.env.test`.
+
+**Already have a `server/.env`?** Files copied before the move to 5433 still say `5432`. Change the port in `DATABASE_URL` yourself; copying the example again would overwrite your other settings.
+
 ## Test and build
 
+Server integration tests (`*.int.test.ts`) use a separate database, `approvalflow_test`, which `compose.dev.yml` creates the first time it starts. Before the run, the test setup drops everything in that database and applies the migrations of the current branch, so tables from other branches never linger. It refuses to run unless the database is on `localhost` and its name is `test` or ends with `_test` (CI can allow another host with `TEST_DB_HOSTS`).
+
+Run from the repository root:
+
 ```bash
-cd server && npm test && npm run build
-cd client && npm test && npm run build
+cp server/.env.test.example server/.env.test   # once
+(cd server && npm test && npm run build)
+(cd client && npm test && npm run build)
 ```
+
+`npm test` in `server` runs both kinds. Without a database, `npm run test:unit` runs only the tests that do not need one; `npm run test:integration` runs only the database tests.
+
+### End-to-end tests (Playwright)
+
+The Sprint 1 journeys in [docs/sprints/sprint-1/E2E.md](docs/sprints/sprint-1/E2E.md) run in a real browser against the real server (port 3100) and the same `approvalflow_test` database. Before the run, the setup migrates that database, empties it, and seeds the demo users and sample requests with a throwaway test password. The setup refuses anything except a local `*_test` database. The database must be running. Install `server` and `client` dependencies first.
+
+```bash
+cd e2e && npm install && npx playwright install chromium   # once
+cd e2e && npm run test:e2e                                   # builds the client, starts the server, runs 4 journeys
+```
+
+On failure, `npm run test:e2e:report` opens the HTML report with screenshots and traces.
+
+If you started the database before `scripts/create-test-db.sql` existed, create the test database once (keeps your dev data):
+
+```bash
+docker compose -f compose.dev.yml exec db createdb -U approvalflow approvalflow_test
+```
+
+## Getting started (teammate)
+
+1. Accept the GitHub invitation, then `git clone https://github.com/AlphabetCG/approvalflow.git`.
+2. Follow **Run locally** and **Test and build** above. All tests should pass before you change anything.
+3. Pick your Issue on the [project board](https://github.com/users/AlphabetCG/projects/5) and move it to *In Progress*.
+4. `git switch staging && git pull`, then `git switch -c feature/<issue>-<short-name>`.
+5. Commit the feature contract (`docs/sprints/sprint-1/F-0x.md`) first, then the failing tests, then the implementation.
+6. Push and open a PR into `staging` with `Closes #<issue>`. Ask your teammate to review.
+
+Conventions while working in parallel:
+
+- **Errors:** throw `badRequest()`, `unauthorized()`, `forbidden()`, `notFound()` or `conflict()` from `server/src/http.ts`; the error handler returns `{ "error": CODE, "message": "..." }`.
+- **Routes:** one router file per feature in `server/src/routes/`, mounted with one line in `server/src/routes/index.ts`.
+- **Migrations:** only one person adds a Prisma migration at a time. Pull `staging` right before `npx prisma migrate dev --name <name>`, and merge migration PRs quickly.
+- **Integration tests:** call `resetDb()` from `server/tests/helpers/db.ts` in `beforeEach`.
 
 ## Team workflow
 

@@ -31,7 +31,16 @@ describe("health and readiness", () => {
   it("unknown API routes return a JSON 404", async () => {
     const res = await request(createApp({ config, checkDb: dbUp })).get("/api/nope");
     expect(res.status).toBe(404);
-    expect(res.body).toEqual({ error: "NOT_FOUND" });
+    expect(res.body.error).toBe("NOT_FOUND");
+  });
+
+  it("a malformed JSON body returns 400 instead of 500", async () => {
+    const res = await request(createApp({ config, checkDb: dbUp }))
+      .post("/api/nope")
+      .set("Content-Type", "application/json")
+      .send("{not json");
+    expect(res.status).toBe(400);
+    expect(res.body.error).toBe("VALIDATION_ERROR");
   });
 });
 
