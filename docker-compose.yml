@@ -1,0 +1,66 @@
+# Full local stack in Docker: PostgreSQL, a one-off migrate + seed job, the API
+# and the client (nginx) on http://localhost:8088 (API also on :3001).
+#   docker compose up --build -d
+# Its own Compose project and volume, so it never touches the dev database of
+# compose.dev.yml (which shares this folder and its default project name).
+# Demo users are created only if DEMO_USER_PASSWORD is set, e.g. in a root .env
+# file (git-ignored):  DEMO_USER_PASSWORD=choose-your-own
+name: approvalflow-docker
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: approvalflow
+      POSTGRES_PASSWORD: approvalflow
+      POSTGRES_DB: approvalflow
+    # No host port: only the containers below talk to this database.
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U approvalflow -d approvalflow"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  migrate:
+    build:
+      context: ./server
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://approvalflow:approvalflow@db:5432/approvalflow?schema=public
+      DEMO_USER_PASSWORD: ${DEMO_USER_PASSWORD:-}
+    command: ["sh", "-c", "npx prisma migrate deploy && npm run prisma:seed"]
+
+  server:
+    build:
+      context: ./server
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgresql://approvalflow:approvalflow@db:5432/approvalflow?schema=public
+    ports:
+      - "3001:3000"
+
+  client:
+    build:
+      context: ./client
+      args:
+        VITE_API_URL: ""
+    restart: unless-stopped
+    depends_on:
+      - server
+    ports:
+      - "8088:80"
+
+volumes:
+  postgres_data:
