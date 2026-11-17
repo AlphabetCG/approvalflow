@@ -1,0 +1,98 @@
+# CI for every Pull Request into staging or main (Lab 5 Ep. 4, R-05).
+# Adapted from the Lab 5 Starter Kit for ApprovalFlow.
+#
+# One job, `test-and-docker` (the main ruleset requires it by this name, Ep. 6):
+#   1. deploy/ scripts checked offline (no GCP access)
+#   2. server: typecheck, unit + API/DB integration tests on a real PostgreSQL, build
+#   3. client: component tests, production build
+#   4. E2E: the Sprint 1 journeys in Chromium against the real server
+#   5. the production Docker image builds
+# No secrets are used: the database is a throwaway service container.
+# Actions are pinned to full commit SHAs; Dependabot proposes updates.
+name: CI & Docker Build
+
+on:
+  workflow_call:
+  pull_request:
+    branches: [main, staging]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-and-docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: approvalflow
+          POSTGRES_PASSWORD: approvalflow
+          # The test setup only runs against a local database named *_test.
+          POSTGRES_DB: approvalflow_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      DATABASE_URL: postgresql://approvalflow:approvalflow@localhost:5432/approvalflow_test?schema=public
+      E2E_DATABASE_URL: postgresql://approvalflow:approvalflow@localhost:5432/approvalflow_test?schema=public
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24"
+
+      - name: Setup Python 3.14
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.14"
+
+      - name: Check deployment scripts without accessing GCP
+        run: |
+          bash -n deploy/deploy.sh deploy/teardown.sh deploy/release.sh
+          bash deploy/tests/test_deploy_stub.sh
+          bash deploy/tests/test_release_stub.sh
+          python3 -m unittest discover -s deploy/tests -p 'test_smoke.py'
+
+      - name: Server — install, typecheck, test (unit + API/DB), build
+        working-directory: ./server
+        run: |
+          npm ci
+          npm run typecheck
+          npm test
+          npm run build
+
+      - name: Client — install, test, build
+        working-directory: ./client
+        run: |
+          npm ci
+          npm test
+          npm run build
+
+      - name: E2E — Sprint 1 journeys (Playwright, Chromium)
+        working-directory: ./e2e
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+          npm run test:e2e
+
+      - name: Production Docker image builds
+        run: docker build -t approvalflow:ci .
