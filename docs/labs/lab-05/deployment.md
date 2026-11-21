@@ -60,7 +60,7 @@ From the repository root. Requires Node.js 24 and Docker.
 
 ## GCP project and resources
 
-Created by `deploy/deploy.sh` (Ep. 5) from `main` at `v0.1.1` (`d8002bd`), run in Cloud Shell by the project owner.
+Created by `deploy/deploy.sh` (Ep. 5) from `main` at `v0.1.1` (`d8002bd`), run in Cloud Shell by the project owner. One setting was changed in the Console afterwards; the table says which.
 
 | Item | Value |
 |---|---|
@@ -69,7 +69,7 @@ Created by `deploy/deploy.sh` (Ep. 5) from `main` at `v0.1.1` (`d8002bd`), run i
 | Public URL | <https://approvalflow-lecxxyja2q-as.a.run.app> |
 | Cloud Run service | `approvalflow`: port 3000, 1 vCPU, 512 MiB, min 0 / max 3 instances, public (`--allow-unauthenticated`) |
 | Migration job | `approvalflow-migrate` (Cloud Run job, same image): `npx prisma migrate deploy && npm run prisma:seed` |
-| Cloud SQL | `approvalflow-pg`: PostgreSQL 16, `db-f1-micro`, Enterprise edition, 10 GB SSD, **storage auto-increase off**, daily backup 03:00; database and user `approvalflow` |
+| Cloud SQL | `approvalflow-pg`: PostgreSQL 16, `db-f1-micro`, Enterprise edition, 10 GB SSD, **storage auto-increase off** (turned off in the Console after `deploy.sh`, which leaves it on; checked with `gcloud sql instances describe approvalflow-pg --format="value(settings.storageAutoResize)"` = `False`), daily backup 03:00; database and user `approvalflow` |
 | Artifact Registry | Docker repository `approvalflow` |
 | Runtime service account | `approvalflow-runner`: Cloud SQL Client (project); Secret Accessor on its two secrets only |
 | Secrets (Secret Manager) | `approvalflow-database-url` (service and job), `approvalflow-demo-password` (job only) |
