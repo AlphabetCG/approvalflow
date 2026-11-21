@@ -1,6 +1,6 @@
 # Lab 5 Deployment
 
-How ApprovalFlow is built, configured, tested, deployed and released. Updated in each Lab 5 episode; GCP resource names arrive in Ep. 5, the release procedure in Ep. 7.
+How ApprovalFlow is built, configured, tested, deployed and released. Updated in each Lab 5 episode.
 
 ## Stack and changes from the reference
 
@@ -80,4 +80,24 @@ Demo password: read it privately with `gcloud secrets versions access latest --s
 
 ## Release procedure
 
-Added in Ep. 7 (deploy workflow). Sprint 1 release: `v0.1.0` = `963b30e` on `main` (PR #18).
+From Ep. 7, nobody types a deploy command. A merge into `main` starts the workflow **Deploy demo** (`.github/workflows/deploy.yml`).
+
+1. Feature branch from `staging` → PR into `staging` → teammate approves, `test-and-docker` green → merge.
+2. Sync `staging` with `main` first if `main` has a merge commit `staging` lacks (the ruleset requires up-to-date branches).
+3. Release PR `staging` → `main` → 1 approval + `test-and-docker` green (ruleset `protect-main`) → merge with a merge commit → tag `vX.Y.Z`.
+4. **Deploy demo** runs by itself:
+
+| Stage | What happens | Where |
+|---|---|---|
+| `test` | Reuses `ci-docker.yml` (job `test-and-docker`) | `deploy.yml` |
+| Authenticate | Workload Identity Federation as `approvalflow-deployer`; no key | `deploy.yml`, Ep. 6 |
+| Build and push | Root `Dockerfile`, tagged with the full commit SHA, to `approvalflow/approvalflow` | `deploy.yml` |
+| Verify, migrate, deploy | Resolves the digest, updates and runs `approvalflow-migrate`, then points the service at the digest; no deploy if the migration fails | `deploy/release.sh` |
+| Smoke test | `/api/health`, `/api/ready`, `/`, `/requests`, `/api/auth/me` = 401 | `deploy/smoke_test.py` |
+| Record | Commit tag, digest and URL in the run summary | `deploy.yml` |
+
+The optional login check (variable `SMOKE_EMAIL` + secret `SMOKE_PASSWORD`) is **not set**, so the smoke step prints `SKIP login`. The guide asks for a dedicated lowest-role account, and the app has no way to create users yet (demo users only, D-09).
+
+**Rollback:** Actions → Deploy demo → Run workflow on `main` with `image_tag` = the full 40-character SHA of an earlier release. Tests, build and migration are skipped; only the service moves back to that image. Migrations only add tables or columns, so an older image still works.
+
+Releases: `v0.1.0` = `963b30e` (Sprint 1, PR #18), `v0.1.1` = `d8002bd` (Lab 5 Ep. 2–4, PR #25; first deploy from Cloud Shell in Ep. 5).
