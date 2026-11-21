@@ -13,7 +13,7 @@ describe("health and readiness", () => {
   it("GET /api/health returns ok", async () => {
     const res = await request(createApp({ config, checkDb: dbUp })).get("/api/health");
     expect(res.status).toBe(200);
-    expect(res.body).toEqual({ status: "ok" });
+    expect(res.body).toEqual({ status: "broken-on-purpose" }); // Lab 5 Ep.6 gate proof: do not merge
   });
 
   it("GET /api/ready reports connected when the database answers", async () => {
