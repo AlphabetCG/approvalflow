@@ -60,7 +60,23 @@ From the repository root. Requires Node.js 24 and Docker.
 
 ## GCP project and resources
 
-Project ID `cpe334-approvalflow-10151028`. Region, resource names and URL: added in Ep. 5.
+Created by `deploy/deploy.sh` (Ep. 5) from `main` at `v0.1.1` (`d8002bd`), run in Cloud Shell by the project owner.
+
+| Item | Value |
+|---|---|
+| Project ID | `cpe334-approvalflow-10151028` |
+| Region | `asia-southeast1` (Singapore) |
+| Public URL | <https://approvalflow-lecxxyja2q-as.a.run.app> |
+| Cloud Run service | `approvalflow`: port 3000, 1 vCPU, 512 MiB, min 0 / max 3 instances, public (`--allow-unauthenticated`) |
+| Migration job | `approvalflow-migrate` (Cloud Run job, same image): `npx prisma migrate deploy && npm run prisma:seed` |
+| Cloud SQL | `approvalflow-pg`: PostgreSQL 16, `db-f1-micro`, Enterprise edition, 10 GB SSD, **storage auto-increase off**, daily backup 03:00; database and user `approvalflow` |
+| Artifact Registry | Docker repository `approvalflow` |
+| Runtime service account | `approvalflow-runner`: Cloud SQL Client (project); Secret Accessor on its two secrets only |
+| Secrets (Secret Manager) | `approvalflow-database-url` (service and job), `approvalflow-demo-password` (job only) |
+
+Demo password: read it privately with `gcloud secrets versions access latest --secret=approvalflow-demo-password`; never paste it into Git, Issues, chats or the report.
+
+**Cost:** Cloud SQL is billed for every hour it exists; Cloud Run scales to 0 when idle. An alerts-only budget is set (Ep. 1). Pause or tear down only after grading (Ep. 9–10).
 
 ## Release procedure
 
