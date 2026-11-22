@@ -12,3 +12,4 @@
 | 2026-11-13 | Claude Code | F-04 contract (API + UI draft), F-04a state machine, decision validation, queue and approve/reject API, tests T-04-01..12 | _TODO_ |
 | 2026-11-13 | Claude Code | F-04 contract v2 (UI section), F-04b review queue page, Decision section on the detail page, tests T-04-14..22 | _TODO_ |
 | 2026-11-15 | Claude Code | E2E test plan, Playwright set-up (config, DB reset/seed guard), four Sprint 1 journeys | _TODO_ |
+| 2026-11-22 | Claude Code | Lab 5 Ep.7 release B: home page sentence and its test (#30); staging fast-forwarded to main | _TODO_ |
