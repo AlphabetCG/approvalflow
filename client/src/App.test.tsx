@@ -147,6 +147,15 @@ describe("App authentication (F-01)", () => {
     expect(screen.queryByRole("link", { name: "Review queue" })).not.toBeInTheDocument();
   });
 
+  // Lab 5 Ep.7 (#30): the home page says where to start; the visible change of release B.
+  it("tells a signed-in user where to start on the home page", async () => {
+    mockApi({ "GET /api/auth/me": [json(200, { user: alice })] });
+    render(<App />);
+    expect(
+      await screen.findByText("Welcome, Alice. Use the links above to submit a request or follow its status."),
+    ).toBeInTheDocument();
+  });
+
   it("skips the login form when a session already exists", async () => {
     mockApi({ "GET /api/auth/me": [json(200, { user: { ...alice, name: "Bob", role: "REVIEWER" } })] });
     render(<App />);
