@@ -48,7 +48,10 @@ function SignedInApp() {
           <Route path="/requests/new" element={<NewRequestPage />} />
           <Route path="/requests/:id" element={<RequestDetailPage currentUserId={user.id} />} />
           <Route path="/reviews" element={<ReviewQueuePage />} />
-          <Route path="*" element={<p>Welcome, {user.name}.</p>} />
+          <Route
+            path="*"
+            element={<p>Welcome, {user.name}. Use the links above to submit a request or follow its status.</p>}
+          />
         </Routes>
       </main>
     </>
