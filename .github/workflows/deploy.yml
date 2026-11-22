@@ -130,8 +130,12 @@ jobs:
           WIF_PROVIDER: ${{ vars.WIF_PROVIDER }}
           WIF_SERVICE_ACCOUNT: ${{ vars.WIF_SERVICE_ACCOUNT }}
         run: |
-          test -n "$PROJECT_ID" && test -n "$REGION"
-          test -n "$WIF_PROVIDER" && test -n "$WIF_SERVICE_ACCOUNT"
+          # `a && b` does not stop a `bash -e` step when `a` fails, so check
+          # each value with ${VAR:?}, which always fails the step when empty.
+          : "${PROJECT_ID:?GCP_PROJECT_ID is not set in environment demo}"
+          : "${REGION:?GCP_REGION is not set in environment demo}"
+          : "${WIF_PROVIDER:?WIF_PROVIDER is not set in environment demo}"
+          : "${WIF_SERVICE_ACCOUNT:?WIF_SERVICE_ACCOUNT is not set in environment demo}"
           [[ "$IMAGE_TAG" =~ ^[0-9a-f]{40}$ ]] || { echo 'Image tag must be a full 40-character commit SHA.'; exit 1; }
 
       # ------------------------------------------------------------------------

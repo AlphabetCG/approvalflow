@@ -42,6 +42,12 @@ Every setting comes from the environment. Examples: `server/.env.example`, `serv
 | `VITE_API_URL` | Client build | API base URL; empty = same origin | No | `client/.env` (empty) | Empty at build time |
 | `DB_PORT` | `compose.dev.yml` | Host port of the dev database (default 5433) | No | Root `.env` (optional) | – |
 | `TEST_DB_HOSTS`, `E2E_DATABASE_URL` | Tests only | Allowed test DB hosts; E2E database | No | Optional | CI workflow |
+| `GCP_PROJECT_ID` | `deploy.yml` | Project to deploy to | No | – | GitHub environment `demo` (variable) |
+| `GCP_REGION` | `deploy.yml` | Region of the service, job and registry (`asia-southeast1`) | No | – | GitHub environment `demo` (variable) |
+| `WIF_PROVIDER` | `deploy.yml` | Full name of the WIF provider `github-actions/github-main` | No | – | GitHub environment `demo` (variable) |
+| `WIF_SERVICE_ACCOUNT` | `deploy.yml` | Deployer account `approvalflow-deployer@…` | No | – | GitHub environment `demo` (variable) |
+| `SMOKE_EMAIL` | `smoke_test.py` | Optional login check: account email | No | – | GitHub environment `demo` (variable); **not set** |
+| `SMOKE_PASSWORD` | `smoke_test.py` | Optional login check: account password | **Yes** | – | GitHub environment `demo` (secret); **not set** |
 
 ## Commands
 
@@ -97,6 +103,17 @@ From Ep. 7, nobody types a deploy command. A merge into `main` starts the workfl
 | Record | Commit tag, digest and URL in the run summary | `deploy.yml` |
 
 The optional login check (variable `SMOKE_EMAIL` + secret `SMOKE_PASSWORD`) is **not set**, so the smoke step prints `SKIP login`. The guide asks for a dedicated lowest-role account, and the app has no way to create users yet (demo users only, D-09).
+
+**Which commit is running:** the service runs an image by digest (`@sha256:…`), so the Cloud Run console shows no commit SHA. Find it in Cloud Shell:
+
+```bash
+# 1. Digest the service runs now
+gcloud run services describe approvalflow --region=asia-southeast1   --format='value(spec.template.spec.containers[0].image)'
+# 2. Map the digest to its tag (the tag is the full commit SHA)
+gcloud artifacts docker images list   asia-southeast1-docker.pkg.dev/cpe334-approvalflow-10151028/approvalflow/approvalflow   --include-tags --filter='version=sha256:<digest from step 1>'
+```
+
+The same commit tag and digest are also in the run summary of each **Deploy demo** run (Actions → Deploy demo → run → Summary).
 
 **Rollback:** Actions → Deploy demo → Run workflow on `main` with `image_tag` = the full 40-character SHA of an earlier release. Tests, build and migration are skipped; only the service moves back to that image. Migrations only add tables or columns, so an older image still works.
 
