@@ -94,6 +94,29 @@ class SmokeTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, '/api/version'):
                 smoke.check('https://demo.test')
 
+    # Review on #42: a rollback to an image built before #41 reports "unknown".
+    def old_image(self, base, path, data=None, opener=None):
+        if path == '/api/version':
+            return b'{"commit":"unknown","revision":"approvalflow-00008-old"}'
+        return self.response(base, path, data, opener)
+
+    @patch.dict('os.environ', {'EXPECTED_COMMIT': SHA, 'ROLLBACK': 'true'}, clear=True)
+    def test_rollback_to_an_image_without_a_version_passes(self):
+        with patch.object(smoke, 'request', side_effect=self.old_image):
+            smoke.check('https://demo.test')
+
+    @patch.dict('os.environ', {'EXPECTED_COMMIT': SHA, 'ROLLBACK': 'false'}, clear=True)
+    def test_normal_deploy_reporting_unknown_fails(self):
+        with patch.object(smoke, 'request', side_effect=self.old_image), patch.object(smoke.time, 'sleep'):
+            with self.assertRaisesRegex(RuntimeError, '/api/version'):
+                smoke.check('https://demo.test')
+
+    @patch.dict('os.environ', {'EXPECTED_COMMIT': '0' * 40, 'ROLLBACK': 'true'}, clear=True)
+    def test_rollback_running_another_commit_still_fails(self):
+        with patch.object(smoke, 'request', side_effect=self.response), patch.object(smoke.time, 'sleep'):
+            with self.assertRaisesRegex(RuntimeError, '/api/version'):
+                smoke.check('https://demo.test')
+
 
 if __name__ == '__main__':
     unittest.main()

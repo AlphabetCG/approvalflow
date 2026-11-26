@@ -14,6 +14,8 @@ WHAT THIS SCRIPT DOES
       5. GET /api/auth/me       -> 401 without a session (protection is on)
       6. OPTIONAL version    -> GET /api/version reports EXPECTED_COMMIT (#41).
          Runs only if EXPECTED_COMMIT is set; the deploy workflow sets it.
+         On a rollback (ROLLBACK=true) "unknown" is accepted too: images built
+         before #41 have no commit baked in, and the traffic has already moved.
       7. OPTIONAL login         -> POST /api/auth/login, GET /api/auth/me, logout.
          Runs only if BOTH SMOKE_EMAIL and SMOKE_PASSWORD are set (a demo
          account, never an admin). The session cookie is always logged out.
@@ -74,8 +76,9 @@ def check(base):
     # --- Optional: the running build is the one that was deployed (#41) -------
     expected = os.getenv('EXPECTED_COMMIT')
     if expected:
+        accepted = {expected, 'unknown'} if os.getenv('ROLLBACK') == 'true' else {expected}
         retry('/api/version is ' + expected[:7],
-              lambda: json.loads(request(base, '/api/version')).get('commit') == expected)
+              lambda: json.loads(request(base, '/api/version')).get('commit') in accepted)
 
     # --- Optional login check (only when both credentials are provided) -------
     email, password = os.getenv('SMOKE_EMAIL'), os.getenv('SMOKE_PASSWORD')
