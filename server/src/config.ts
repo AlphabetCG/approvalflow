@@ -5,6 +5,10 @@ export interface Config {
   corsOrigins: string[];
   clientDist: string;
   sessionTtlHours: number;
+  // #41: baked into the image at build time (Dockerfile ARG APP_COMMIT).
+  commit: string;
+  // #41: set by Cloud Run on every revision; absent locally.
+  revision: string | null;
 }
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
@@ -25,5 +29,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
       .filter(Boolean),
     clientDist: env.CLIENT_DIST ?? "../client/dist",
     sessionTtlHours,
+    commit: env.APP_COMMIT || "unknown",
+    revision: env.K_REVISION || null,
   };
 }

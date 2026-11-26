@@ -99,7 +99,8 @@ From Ep. 7, nobody types a deploy command. A merge into `main` starts the workfl
 | Authenticate | Workload Identity Federation as `approvalflow-deployer`; no key | `deploy.yml`, Ep. 6 |
 | Build and push | Root `Dockerfile`, tagged with the full commit SHA, to `approvalflow/approvalflow` | `deploy.yml` |
 | Verify, migrate, deploy | Resolves the digest, updates and runs `approvalflow-migrate`, then points the service at the digest; no deploy if the migration fails | `deploy/release.sh` |
-| Smoke test | `/api/health`, `/api/ready`, `/`, `/requests`, `/api/auth/me` = 401 | `deploy/smoke_test.py` |
+| Smoke test | `/api/health`, `/api/ready`, `/`, `/requests`, `/api/auth/me` = 401; since #41 also `/api/version` = the deployed commit | `deploy/smoke_test.py` |
+| Running version (#41, R-08) | `GET /api/version` → `{"commit": <SHA baked in at build>, "revision": <Cloud Run K_REVISION>}`; footer "Version <short sha> · <revision>" on every page | `server/src/app.ts`, `client/src/VersionFooter.tsx`, `Dockerfile` (`ARG APP_COMMIT`) |
 | Record | Commit tag, digest and URL in the run summary | `deploy.yml` |
 
 The optional login check (variable `SMOKE_EMAIL` + secret `SMOKE_PASSWORD`) is **not set**, so the smoke step prints `SKIP login`. The guide asks for a dedicated lowest-role account, and the app has no way to create users yet (demo users only, D-09).

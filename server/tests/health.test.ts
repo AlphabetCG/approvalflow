@@ -28,6 +28,21 @@ describe("health and readiness", () => {
     expect(res.body.status).toBe("not_ready");
   });
 
+  // #41: which build is running (Lab 5 R-08, Lab 6 UAT).
+  it("GET /api/version reports the baked-in commit and the Cloud Run revision", async () => {
+    const sha = "daad8ab52e6e6cc6e65e275fcac0a2992051b3e7";
+    const c = loadConfig({ CLIENT_DIST: "does-not-exist", APP_COMMIT: sha, K_REVISION: "approvalflow-00007-abc" });
+    const res = await request(createApp({ config: c, checkDb: dbDown })).get("/api/version");
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ commit: sha, revision: "approvalflow-00007-abc" });
+  });
+
+  it("GET /api/version says unknown outside a built image", async () => {
+    const res = await request(createApp({ config, checkDb: dbUp })).get("/api/version");
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ commit: "unknown", revision: null });
+  });
+
   it("unknown API routes return a JSON 404", async () => {
     const res = await request(createApp({ config, checkDb: dbUp })).get("/api/nope");
     expect(res.status).toBe(404);
