@@ -60,6 +60,8 @@ export async function decide(
 ): Promise<Decision> {
   return db.$transaction(async (tx) => {
     // D-13 / D-10: a request the caller is not part of looks like an unknown id.
+    // The scope is part of the query, so another reviewer's request is never
+    // loaded (T-04-09, T-04-23).
     const r = await tx.request.findFirst({
       where: { id: requestId, OR: [{ requesterId: reviewerId }, { reviewerId }] },
       select: { status: true, requesterId: true },
