@@ -27,6 +27,7 @@ Requirement → feature → sprint → acceptance criterion → planned test →
 | BR-06 | F-04 | 1 | AC-04-8, AC-04-9 | T-04-11, T-04-12 | `server/tests/decisions.int.test.ts` (one decision row) | PASS (API + DB) | 28cfccd |
 | BR-07 | F-04 | 1 | AC-04-9 | T-04-12 | `server/tests/decisions.int.test.ts` (simultaneous approvals, forced overlap) | PASS (API + DB) | 28cfccd |
 | NFR-03 | F-04 | 1 | AC-04-6, AC-04-7 | T-04-09, T-04-10 | `server/tests/decisions.int.test.ts` (404 / 403 / 401) | PASS (API + DB) | 28cfccd |
+| NFR-03, D-13 | F-04 | 1 | AC-04-6 | T-04-23 | `server/tests/decisions.int.test.ts` (unassigned reviewer, approve and reject, same and other department; Lab 6 controlled defect exercise) | FAIL on defect `db65815`; PASS after the fix | 9715c6e |
 | FR-06 | F-04 | 1 | AC-04-2, AC-04-3 | T-04-13 | No automated test; checked by hand with `curl` on the merge of #14 and #15 (PR #15 review) | PASS (manual) | 805d217 |
 | FR-05 | F-04 | 1 | AC-04-10 | T-04-14, T-04-15 | `client/src/reviews/ReviewQueuePage.test.tsx` | PASS (component) | 4d629e9 |
 | FR-05 | F-04 | 1 | AC-04-10 | T-04-16 | `client/src/App.test.tsx` (Review queue link by role) | PASS (component) | 4d629e9 |

@@ -60,9 +60,10 @@ export async function decide(
 ): Promise<Decision> {
   return db.$transaction(async (tx) => {
     // D-13 / D-10: a request the caller is not part of looks like an unknown id.
-    // CONTROLLED DEFECT EXERCISE (Lab 6): ownership scope removed on purpose.
+    // The scope is part of the query, so another reviewer's request is never
+    // loaded (T-04-09, T-04-23).
     const r = await tx.request.findFirst({
-      where: { id: requestId },
+      where: { id: requestId, OR: [{ requesterId: reviewerId }, { reviewerId }] },
       select: { status: true, requesterId: true },
     });
     if (!r) throw notFound("Request not found");
@@ -72,7 +73,7 @@ export async function decide(
     if (!to) throw conflict(`This request is already ${r.status}`);
 
     const updated = await tx.request.updateMany({
-      where: { id: requestId, status: r.status },
+      where: { id: requestId, reviewerId, status: r.status },
       data: { status: to },
     });
     if (updated.count === 0) throw conflict("This request was decided by someone else");
