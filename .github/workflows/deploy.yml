@@ -159,7 +159,7 @@ jobs:
         run: |
           gcloud auth configure-docker "$REGION-docker.pkg.dev" --quiet
           IMAGE="$REGION-docker.pkg.dev/$PROJECT_ID/approvalflow/approvalflow:$IMAGE_TAG"
-          docker build --tag "$IMAGE" .
+          docker build --build-arg APP_COMMIT="$IMAGE_TAG" --tag "$IMAGE" .
           docker push "$IMAGE"
 
       # ------------------------------------------------------------------------
@@ -184,6 +184,8 @@ jobs:
           # Optional login check: set BOTH (variable + secret) or neither.
           SMOKE_EMAIL: ${{ vars.SMOKE_EMAIL }}
           SMOKE_PASSWORD: ${{ secrets.SMOKE_PASSWORD }}
+          # #41: /api/version must report the commit that was deployed.
+          EXPECTED_COMMIT: ${{ env.IMAGE_TAG }}
         run: python3 deploy/smoke_test.py "$SERVICE_URL"
 
       # ------------------------------------------------------------------------
@@ -199,4 +201,5 @@ jobs:
             echo "- URL: $SERVICE_URL"
             echo '- Smoke test: passed (health, readiness/DB, HTML, client route, unauthenticated /api/auth/me = 401).'
             echo '- See smoke step for optional login check status.'
+            echo "- Running version: \`$(curl -fsS "$SERVICE_URL/api/version")\`"
           } >> "$GITHUB_STEP_SUMMARY"

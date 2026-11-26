@@ -45,6 +45,10 @@ COPY --from=client-builder /app/client/dist /app/client/dist
 
 RUN chmod +x ./docker-entrypoint.sh
 
+# #41: the commit this image was built from, reported by /api/version.
+# Deploy demo passes --build-arg APP_COMMIT=<commit SHA>.
+ARG APP_COMMIT=unknown
+ENV APP_COMMIT=$APP_COMMIT
 ENV NODE_ENV=production
 ENV TZ=Asia/Bangkok
 # Must match --port in deploy/deploy.sh.

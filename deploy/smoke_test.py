@@ -12,7 +12,9 @@ WHAT THIS SCRIPT DOES
       3. GET /                  -> HTML (the built React app is served)
       4. GET /requests          -> HTML (client routes fall back to the app)
       5. GET /api/auth/me       -> 401 without a session (protection is on)
-      6. OPTIONAL login         -> POST /api/auth/login, GET /api/auth/me, logout.
+      6. OPTIONAL version    -> GET /api/version reports EXPECTED_COMMIT (#41).
+         Runs only if EXPECTED_COMMIT is set; the deploy workflow sets it.
+      7. OPTIONAL login         -> POST /api/auth/login, GET /api/auth/me, logout.
          Runs only if BOTH SMOKE_EMAIL and SMOKE_PASSWORD are set (a demo
          account, never an admin). The session cookie is always logged out.
 
@@ -68,6 +70,12 @@ def check(base):
     retry('/', lambda: is_html(request(base, '/')))
     retry('/requests (client route)', lambda: is_html(request(base, '/requests')))
     retry('/api/auth/me is 401 without a session', lambda: status_of(base, '/api/auth/me') == 401)
+
+    # --- Optional: the running build is the one that was deployed (#41) -------
+    expected = os.getenv('EXPECTED_COMMIT')
+    if expected:
+        retry('/api/version is ' + expected[:7],
+              lambda: json.loads(request(base, '/api/version')).get('commit') == expected)
 
     # --- Optional login check (only when both credentials are provided) -------
     email, password = os.getenv('SMOKE_EMAIL'), os.getenv('SMOKE_PASSWORD')
