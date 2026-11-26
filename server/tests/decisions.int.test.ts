@@ -180,6 +180,33 @@ describe("POST /api/requests/:id/approve and /reject", () => {
     expect(await state(r.id)).toEqual(unchanged);
   });
 
+  // T-04-23 (AC-04-6, D-13, NFR-03) — Lab 6 controlled defect exercise.
+  // T-04-09 covers approve by a same-department reviewer only. This covers both
+  // decisions, a reviewer from another department too, and the whole history.
+  it.each([
+    ["approve", "ENGINEERING"],
+    ["reject", "ENGINEERING"],
+    ["approve", "FINANCE"],
+    ["reject", "FINANCE"],
+  ])("refuses to let an unassigned reviewer (%s, %s) decide by calling the API", async (action, department) => {
+    const r = await makeRequest(requester, reviewer);
+    const outsider = await signedIn(await createUser({ role: "REVIEWER", department }));
+    const historyBefore = await prisma.requestHistory.findMany({ where: { requestId: r.id }, orderBy: { id: "asc" } });
+
+    const res = await outsider.post(`/api/requests/${r.id}/${action}`).send({ reason: "Not my request to decide" });
+
+    expect(res.status).toBe(404);
+    expect(res.body).toEqual({ error: "NOT_FOUND", message: "Request not found" });
+    const after = await prisma.request.findUniqueOrThrow({ where: { id: r.id } });
+    expect(after.status).toBe("SUBMITTED");
+    expect(after.reviewerId).toBe(reviewer.id);
+    expect(await prisma.requestHistory.findMany({ where: { requestId: r.id }, orderBy: { id: "asc" } })).toEqual(
+      historyBefore,
+    );
+    // The assigned reviewer can still decide it afterwards.
+    expect((await (await signedIn(reviewer)).post(`/api/requests/${r.id}/approve`).send({})).status).toBe(200);
+  });
+
   // T-04-10 (AC-04-7)
   it("forbids a requester to use the queue or decide, even on their own request", async () => {
     const r = await makeRequest(requester, reviewer);
