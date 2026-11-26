@@ -2,7 +2,7 @@
 
 **Product Team:** TH-005_P5 (ApprovalFlow) — Naphat Utabuawong (67070501015), Nantakorn Pinsupaporn (67070501028)
 **UAT Team:** TH-001_P3 (LoungCheu) — Paphangkorn Luanseng (67070501083), Jetanin Naitho (67070501011)
-**Version history:** v1 (2026-11-24) – initial handoff; v2 (2026-11-26) – after TA review: UAT-01 step 5 expected result made unambiguous (the queue has no Status column; other rows may appear)
+**Version history:** v1 (2026-11-24) – initial handoff; v2 (2026-11-26) – after TA review: UAT-01 step 5 expected result made unambiguous (the queue has no Status column; other rows may appear); running revision `00006-8bp` and its image digest corrected (§1)
 
 ## 1. What you are testing
 
@@ -11,7 +11,7 @@
 | Application | ApprovalFlow — employees submit expense/purchase requests; a reviewer in their department approves or rejects them |
 | Deployed URL | <https://approvalflow-lecxxyja2q-as.a.run.app> |
 | Tested release | tag `v0.2.0`, commit `1cbd8b46df495d4c748817ab8f92f1cce4143485` (`1cbd8b4`, `main`) |
-| Cloud Run revision / image | `approvalflow-00006-8bp` (100% traffic), image `sha256:<CONFIRM from revision 00006-8bp YAML>`. Image built and first deployed (revision `00005-8rh`, `sha256:20984f2b96e485900c40100778f7ff4f85deb86c878d8c6d8c1c891fe76049cf`) by Deploy demo run [45030322636](https://github.com/AlphabetCG/approvalflow/actions/runs/45030322636) on 22 Nov 2026; revision `00006-8bp` was then created from the Cloud Console (`<reason: e.g. setting change, same image>`). |
+| Cloud Run revision / image | `approvalflow-00006-8bp` (100% traffic), image `asia-southeast1-docker.pkg.dev/cpe334-approvalflow-10151028/approvalflow/approvalflow@sha256:7769a17259d37491eae97001f3d08dad5fc694c606b76d7c51ba22933249c8ea` (the linux/amd64 image of tag `1cbd8b46df495d4c748817ab8f92f1cce4143485`). It is the same image as revision `00005-8rh`, which Deploy demo run [45030322636](https://github.com/AlphabetCG/approvalflow/actions/runs/45030322636) deployed on 22 Nov 2026 20:59 (ICT). That run log shows `sha256:20984f2b96e485900c40100778f7ff4f85deb86c878d8c6d8c1c891fe76049cf`: the Artifact Registry digest of the tag, i.e. the image index that contains `7769a17…`. Cloud Run reports the image it actually runs. `00006-8bp` was created by Naphat from the Cloud Console ("Edit & deploy new revision") on 22 Nov 2026 23:08 (ICT) with **no image change**, most likely the Lab 5 Ep.8 "restart without an image change" check (#31). |
 | Sprint 1 baseline | tag `v0.1.0` (release PR #18): F-01 sign-in, F-02 submit request, F-03 my requests and history, F-04 review queue and approve/reject |
 | Difference v0.1.0 → v0.2.0 | Delivery only (Docker, CI/CD, deploy pipeline) and one sentence on the home page. No Sprint 1 behaviour changed; no Sprint 2 feature is deployed. |
 | Repository | <https://github.com/AlphabetCG/approvalflow> |
