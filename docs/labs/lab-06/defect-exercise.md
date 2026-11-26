@@ -31,7 +31,7 @@ Defect report and triage: [issue #39](https://github.com/AlphabetCG/approvalflow
 
 | # | Stage | Branch / ref | Commit | Deployed? |
 |---|---|---|---|---|
-| 0 | Baseline: Sprint 1 release accepted by TH-001_P3 | `main`, tag `v0.2.0` | `1cbd8b4` (same tree as `staging` `c77c9f7`, the branch point) | Yes: `approvalflow-00006-8bp` |
+| 0 | Baseline: Sprint 1 release accepted by TH-001_P3 | `main`, tag `v0.2.0` | `1cbd8b4` (same tree as `staging` `c77c9f7`, the branch point) | Yes: `approvalflow-00006-8bp`, image `sha256:7769a17259d37491eae97001f3d08dad5fc694c606b76d7c51ba22933249c8ea` |
 | 1 | Defect injected (controlled exercise) | `fix/unassigned-reviewer-decide` | `db65815` | **No** (CI only) |
 | 2 | Failing test T-04-23 (RED) | `fix/unassigned-reviewer-decide` | `9715c6e` | **No** (CI only) |
 | 3 | Fix (GREEN) | `fix/unassigned-reviewer-decide` | `daad8ab` | No |
