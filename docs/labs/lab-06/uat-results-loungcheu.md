@@ -24,7 +24,7 @@ The Product Team asked us to check `/api/ready` before each session.
 |---|---|---|---|---|---|
 | S1 | Naphat | 24 Nov 2026 13:10 (start) / 14:12 (end) | `ready`, `connected`, `0b2cc80` at both checks | Yes | EV-VER-S1, EV-VER-S1-end |
 | S2 | Nantakorn | 24 Nov 2026 22:03 (start) | `ready`, `connected`, `0b2cc80` | Yes | EV-VER-S2 |
-| S3 (retest) | | | | | EV-VER-S3 |
+| S3 (retest) | Nantakorn | 26 Nov 2026 19:56 | `ready`, `connected`, `6f49d32` (the corrected release, see §7) | No, expected: new release `v2.0.1-lab6` | EV-VER-S3 |
 
 ## 2. Summary
 
@@ -198,23 +198,29 @@ One GitHub issue per finding, form **UAT finding (Lab 6)** on `jetanin/LoungCheu
 
 ## 7. Retest of corrected release (Thu 26 Nov)
 
-Fill in only if the Product Team deploys a fix.
+We reported no findings, so this is the retest of the Product Team's **TA-assigned controlled defect exercise** (their issue #64). The defect was that the same participant could create a second ACTIVE registration by sending the register request to the API again. It existed only on their branch and was never deployed. We retested the corrected behaviour on the deployed release, following their `docs/labs/lab-06/retest-controlled-exercise.md` at tag `v2.0.1-lab6`.
 
 | Item | Value |
 |---|---|
-| Corrected release | tag `<tag>`, commit `<sha>`, revision `<revision>` |
-| `/api/ready` version seen | `<first 7>` at `<date-time>` (EV-VER-S3) |
-| Announced by Product Team | `<date-time, IG message>` |
+| Corrected release | tag `v2.0.1-lab6`, commit `6f49d327e8e709fc716b9eeb60591ea4fd692fc9`, revision `scccd8b05-00012-msg`. The tag resolves to this commit (checked on GitHub). The release also contains their Sprint 2 features, which were not used |
+| `/api/ready` version seen | `6f49d32` (full `6f49d327e8e709fc716b9eeb60591ea4fd692fc9`) at 26 Nov 2026 19:56 (EV-VER-S3) |
+| Announced by Product Team | 26 Nov 2026, IG group: first the Sprint 2 deploy notice, then the retest request with tag, commit and revision |
 
 | Finding / Issue | Original case + steps re-run | Tester | Date-time | Actual result | Result | Evidence |
 |---|---|---|---|---|---|---|
-| | | | | | | |
+| Controlled exercise (LoungCheu #64), AC-13, AC-17, BR-04 | A1: as `organizer.a`, published `[RT-CX-NP] Duplicate retest` (3 seats, event `9fb07b47-8d9a-474a-b594-93fac64d9edb`). A2: `participant.a` registered (`567e69c3-…`), reload → ว่าง 2 / 3 | Nantakorn | 26 Nov 2026 20:02–20:07 | PUBLISHED, ว่าง 3 / 3; after registering and reloading, "ว่าง 2 / 3 ที่นั่ง", ACTIVE 1 | PASS | EV-RT-A1, EV-RT-A2a, EV-RT-A2b |
+| Controlled exercise, B1–B5 (their console script, only the `TITLE` line changed; run in `participant.a`'s own session) | B1 version · B2 one repeated POST · B3 two POSTs at once · B4 seats before/after · B5 own ACTIVE registrations | Nantakorn | 26 Nov 2026 20:10:40 | B1 `6f49d327e8e709fc716b9eeb60591ea4fd692fc9` · B2 `409 ALREADY_REGISTERED` · B3 `409 ALREADY_REGISTERED, 409 ALREADY_REGISTERED` · B4 `active 1 / available 2` before and after · B5 `1` | PASS (B1–B5) | EV-RT-B |
+| Controlled exercise, C1–C3 | C1 reload the event (participant.a) · C2 my registrations · C3 roster (organizer.a) | Nantakorn | 26 Nov 2026 20:13–20:16 | C1 "ว่าง 2 / 3 ที่นั่ง", "ลงทะเบียน ACTIVE 1 คน" · C2 the event listed once (Ctrl+F 1/1), `567e69c3-…` · C3 "ลงทะเบียน ACTIVE 1 / 3 คน", one row: Participant A | PASS (C1–C3) | EV-RT-C1, EV-RT-C2, EV-RT-C3 |
 
 **Affected cases re-run (regression):**
 
 | Case | Tester | Date-time | Result | Evidence |
 |---|---|---|---|---|
-| | | | | |
+| UAT-02 (title `[UAT-02-RT-NP] Capacity check`, event `77f89d4b-0a0c-4cb4-9e6f-eef9af6a9481`) | Nantakorn | 26 Nov 2026 20:22–20:28 | PASS. Step 1 PUBLISHED 2 / 2. Step 2 A registered (`ee7b6b0d-…`). Step 3: after F5 the page shows "คุณลงทะเบียนกิจกรรมนี้แล้ว…" with the register button **greyed**, counts still 1 / 2 (the button can no longer be clicked again; the API refusal is covered by B2/B3). Step 4 listed once. Step 5 B registered (`c004b42a-…`), ว่าง 0 / 2 shown at once. Step 6 C: "…ไม่มีที่นั่งว่าง", button greyed. Step 7 roster ACTIVE 2 / 2, A and B only. Our S2 observations O-01 and O-02 no longer occur on this release | EV-RT-UAT02-1 … EV-RT-UAT02-7 |
+
+**Retest result: PASS.** We sent it in the IG group on 26 Nov 2026 with the console table and C1–C3 screenshots, and confirmed that our Sprint 1 decision for LoungCheu stays **Accepted** on revision `scccd8b05-00012-msg`.
+
+Test data left on the Product Team's system: `[RT-CX-NP] Duplicate retest`, `[UAT-02-RT-NP] Capacity check` (listed in the IG message).
 
 ## 8. Final Sprint 1 UAT decision
 
@@ -275,3 +281,8 @@ All files are in `evidence/`. Tester: Naphat unless stated. Version for all: `v1
 | EV-UAT07-extra (3) | `EV-UAT07-extra_end-1200AM-before-start_…T2217.png`, `EV-UAT07-extra_tester-error-end-0800PM-saved_…T2226.png`, `EV-UAT07-extra_step5-first-run-NP-2_…T2232.png` | UAT-07 (tester input errors) | See the note under the UAT-07 table | 22:17–22:32 |
 | EV-UAT02-1 … 7 | `EV-UAT02-1_published-2-of-2_…T2258.png` … `EV-UAT02-7_roster-2-of-2_…T2309.png` (5a/5b, 6a/6b) | UAT-02 / 1–7 | One file per step (see §4) | 22:58–23:09 |
 | EV-UAT03-1 … 6b | `EV-UAT03-1_A-published-close-2320_…T2318.png` … `EV-UAT03-6b_B-still-draft-after-reload_…T2330.png` | UAT-03 / 1–6 | One file per step; EV-UAT03-4 shows the taskbar clock at 23:21 | 23:18–23:30 |
+| EV-VER-S3 | `EV-VER-S3_api-ready-6f49d32_2026-11-26T1956.png` | §7 | Retest version check: `6f49d327…` (tester Nantakorn, 26 Nov) | 19:56 (26 Nov) |
+| EV-RT-A1, A2a, A2b | `EV-RT-A1_rt-cx-published-3-of-3_…T2002.png`, `EV-RT-A2a_participant-a-registered_…T2006.png`, `EV-RT-A2b_after-reload-2-of-3_…T2007.png` | §7 / A | Retest event set up: 3 / 3 → 2 / 3 | 20:02–20:07 (26 Nov) |
+| EV-RT-B | `EV-RT-B_console-table-409_2026-11-26T2010.png` | §7 / B1–B5 | Console table: 409 ALREADY_REGISTERED ×3, seats unchanged, 1 own registration | 20:10 (26 Nov) |
+| EV-RT-C1 … C3 | `EV-RT-C1_reload-2-of-3-active-1_…T2013.png` … `EV-RT-C3_roster-1-of-3-one-row_…T2016.png` | §7 / C1–C3 | UI confirmation after the API attempts | 20:13–20:16 (26 Nov) |
+| EV-RT-UAT02-1 … 7 | `EV-RT-UAT02-1_published-2-of-2_…T2022.png` … `EV-RT-UAT02-7_roster-2-of-2_…T2028.png` (6a) | §7 / UAT-02 re-run | One file per step | 20:22–20:28 (26 Nov) |
