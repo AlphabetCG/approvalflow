@@ -17,6 +17,7 @@ spec = importlib.util.spec_from_file_location('smoke', Path(__file__).parents[1]
 smoke = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(smoke)
 
+SHA = 'daad8ab52e6e6cc6e65e275fcac0a2992051b3e7'
 ME = b'{"user":{"id":"u1","email":"req.eng1@example.com"}}'
 
 
@@ -36,6 +37,7 @@ class SmokeTests(unittest.TestCase):
             '/api/auth/login': ME,
             '/api/auth/me': ME,
             '/api/auth/logout': b'',
+            '/api/version': b'{"commit":"' + SHA.encode() + b'","revision":"approvalflow-00007-abc"}',
         }[path]
 
     @patch.dict('os.environ', {}, clear=True)
@@ -78,6 +80,42 @@ class SmokeTests(unittest.TestCase):
             with self.assertRaisesRegex(RuntimeError, 'Login smoke'):
                 smoke.check('https://demo.test')
             self.assertEqual(req.call_args.args[1], '/api/auth/logout')
+
+    # #41: the running build must be the one that was deployed.
+    @patch.dict('os.environ', {'EXPECTED_COMMIT': SHA}, clear=True)
+    def test_version_matches_the_deployed_commit(self):
+        with patch.object(smoke, 'request', side_effect=self.response) as req:
+            smoke.check('https://demo.test')
+            self.assertIn('/api/version', [c.args[1] for c in req.call_args_list])
+
+    @patch.dict('os.environ', {'EXPECTED_COMMIT': '0' * 40}, clear=True)
+    def test_other_commit_running_fails(self):
+        with patch.object(smoke, 'request', side_effect=self.response), patch.object(smoke.time, 'sleep'):
+            with self.assertRaisesRegex(RuntimeError, '/api/version'):
+                smoke.check('https://demo.test')
+
+    # Review on #42: a rollback to an image built before #41 reports "unknown".
+    def old_image(self, base, path, data=None, opener=None):
+        if path == '/api/version':
+            return b'{"commit":"unknown","revision":"approvalflow-00008-old"}'
+        return self.response(base, path, data, opener)
+
+    @patch.dict('os.environ', {'EXPECTED_COMMIT': SHA, 'ROLLBACK': 'true'}, clear=True)
+    def test_rollback_to_an_image_without_a_version_passes(self):
+        with patch.object(smoke, 'request', side_effect=self.old_image):
+            smoke.check('https://demo.test')
+
+    @patch.dict('os.environ', {'EXPECTED_COMMIT': SHA, 'ROLLBACK': 'false'}, clear=True)
+    def test_normal_deploy_reporting_unknown_fails(self):
+        with patch.object(smoke, 'request', side_effect=self.old_image), patch.object(smoke.time, 'sleep'):
+            with self.assertRaisesRegex(RuntimeError, '/api/version'):
+                smoke.check('https://demo.test')
+
+    @patch.dict('os.environ', {'EXPECTED_COMMIT': '0' * 40, 'ROLLBACK': 'true'}, clear=True)
+    def test_rollback_running_another_commit_still_fails(self):
+        with patch.object(smoke, 'request', side_effect=self.response), patch.object(smoke.time, 'sleep'):
+            with self.assertRaisesRegex(RuntimeError, '/api/version'):
+                smoke.check('https://demo.test')
 
 
 if __name__ == '__main__':

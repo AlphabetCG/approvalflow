@@ -48,6 +48,11 @@ export function createApp({ config, checkDb }: AppDeps) {
     }
   });
 
+  // #41: which build is running. Public, so testers can check it before signing in.
+  app.get("/api/version", (_req, res) => {
+    res.json({ commit: config.commit, revision: config.revision });
+  });
+
   // F-01: read the session cookie once, so every route below can use req.user.
   app.use("/api", cookieParser(), loadSessionUser(config));
   app.use("/api/auth", authRouter(config));

@@ -6,6 +6,7 @@ import MyRequestsPage from "./requests/MyRequestsPage";
 import NewRequestPage from "./requests/NewRequestPage";
 import RequestDetailPage from "./requests/RequestDetailPage";
 import ReviewQueuePage from "./reviews/ReviewQueuePage";
+import VersionFooter from "./VersionFooter";
 
 // Signed-in pages. Each feature adds its route here, for example:
 //   <Route path="/requests/new" element={<NewRequestPage />} />   // F-02
@@ -69,6 +70,7 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Shell />
+        <VersionFooter />
       </BrowserRouter>
     </AuthProvider>
   );
