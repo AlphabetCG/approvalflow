@@ -2,7 +2,7 @@
 
 **Product Team:** TH-005_P5 (ApprovalFlow) — Naphat Utabuawong (67070501015), Nantakorn Pinsupaporn (67070501028)
 **UAT Team:** TH-001_P3 (LoungCheu) — Paphangkorn Luanseng (67070501083), Jetanin Naitho (67070501011)
-**Version history:** v1 (2026-11-24) – initial handoff
+**Version history:** v1 (2026-11-24) – initial handoff; v2 (2026-11-26) – after TA review: UAT-01 step 5 expected result made unambiguous (the queue has no Status column; other rows may appear)
 
 ## 1. What you are testing
 
@@ -80,7 +80,7 @@ There is no Administrator account in Sprint 1.
 | 2 | Click **New request**; enter the inputs; click **Submit request**. | Message: "Request submitted. Status: SUBMITTED. Reviewer: rev.eng1@example.com" **or** "…rev.eng2@example.com". **Write down this reviewer.** |
 | 3 | Click **My requests**. | The new request is the **first** row (newest first): Title as entered, Category Training, Status `SUBMITTED`, Reviewer = the one from step 2. |
 | 4 | Open the request. | Amount shows `1,500.50`. History has one entry: "Submitted", `– → SUBMITTED`, by Anan. No **Decision** section. |
-| 5 | Sign out; sign in as the reviewer from step 2. Click **Review queue**. | The request is listed with status `SUBMITTED`. Only `SUBMITTED` requests assigned to this reviewer are listed, oldest first. |
+| 5 | Sign out; sign in as the reviewer from step 2. Click **Review queue**. | A table with the columns Title, Requester, Category, Amount (THB), Submitted (there is **no** Status column: the queue lists only requests that still wait for a decision). It contains a row `UAT-<team>-01 Team lunch`, Requester Anan (Engineering requester), Category Training, Amount 1,500.50. Rows are sorted by Submitted, oldest at the top. Older rows from demo data or other testers may appear above it; that is expected. |
 | 6 | Open it; type `Within budget` in **Comment or reason**; click **Approve**. | "Request approved." Status `APPROVED`. A second history entry appears: "Approved", `SUBMITTED → APPROVED`, by this reviewer, Comment: Within budget. The Decision section disappears. |
 | 7 | Click **Review queue**. | The request is no longer in the queue. |
 | 8 | Sign out; sign in as REQ-ENG1; open the request from **My requests**. | Status `APPROVED`; history shows both entries in order (Submitted, then Approved with the comment). |
