@@ -9,7 +9,7 @@ We are the **UAT Team** for this product. These are our own independent results.
 | Application | LoungCheu — event registration (Organizer publishes events; Participants register) |
 | Tested release | tag `v1.0.1-uat`, commit `0b2cc804f298a28041d9ba9c7ec05d2cf64e4e08`, Cloud Run revision `scccd8b05-00009-vvq` |
 | URL | <https://scccd8b05-4d7hbszvwq-as.a.run.app/> |
-| Cases received | 7 cases, `docs/labs/lab-06/uat-cases.md` on branch `lab6-staging` at `0b2cc80`, received 23 Nov 2026 `<20:01>` |
+| Cases received | 7 cases, `docs/labs/lab-06/uat-cases.md` on branch `lab6-staging` at `0b2cc80`, received 23 Nov 2026 20:01 |
 | Accepted-for-test scope | F-01 to F-05 (log in/out, create and publish events, register, my registrations, organizer roster). Out of scope: F-06 to F-09. |
 | Execution window | S1 Naphat Utabuawong (UAT-01, X-01, X-02, UAT-04, UAT-05): 24 Nov 2026 13:10–14:12 · S2 Nantakorn Pinsupaporn (UAT-06, UAT-07, UAT-02, UAT-03): 24 Nov 2026 22:03–23:30 (Asia/Bangkok) |
 | Method | Manual, through the browser UI (Chrome 158 on Windows 11) |
@@ -185,10 +185,6 @@ These are our own checks against the Sprint 1 contract. They are recorded separa
 
 One GitHub issue per finding, form **UAT finding (Lab 6)** on `jetanin/LoungCheu`, link posted in the IG group.
 
-| Our ID | Issue | Case / step | AC | Type (defect / feature request) | Our severity | Summary | Sent (date-time) | Product Team triage | Status |
-|---|---|---|---|---|---|---|---|---|---|
-| F-01 | `#` | | | | | | | | |
-
 **No findings. All 7 cases passed on `v1.0.1-uat / 0b2cc80`.** Observations O-01 and O-02 (§5) are passed to the Product Team in the IG group as suggestions, not as findings.
 
 **Severity we use (the Product Team's scale):**
@@ -226,28 +222,27 @@ Test data left on the Product Team's system: `[RT-CX-NP] Duplicate retest`, `[UA
 
 | Item | Value |
 |---|---|
-| Decision | ☐ Accepted ☐ Accepted with documented minor limitations ☐ Not Accepted |
-| Release accepted | tag `<tag>`, commit `<sha>`, revision `<revision>` |
+| Decision | ☒ **Accepted** ☐ Accepted with documented minor limitations ☐ Not Accepted |
+| Release accepted | tag `v1.0.1-uat`, commit `0b2cc804f298a28041d9ba9c7ec05d2cf64e4e08`, revision `scccd8b05-00009-vvq` |
 | Scope | LoungCheu Sprint 1, F-01 to F-05, as in the Product Team's handoff |
-| Date | `<date>` |
+| Date | 25 Nov 2026 |
 | UAT testers | Naphat Utabuawong (67070501015), Nantakorn Pinsupaporn (67070501028), TH-005_P5 |
-| Basis | `<n>`/7 cases PASS on the release above; findings `<list>` closed by retest |
-| Accepted minor limitations | `<none / list each, with issue link>` |
-| Reasons (if Not Accepted) | `<open critical/major issues, or BLOCKED cases>` |
+| Basis | 7/7 cases PASS on the release above (§2, §3); no findings (§6); 0 BLOCKED |
+| Accepted minor limitations | None |
+| Reasons (if Not Accepted) | Not applicable |
+| After the decision | Retest of the Product Team's controlled defect exercise (their #64) PASS on `v2.0.1-lab6` / `6f49d32` / `scccd8b05-00012-msg`, 26 Nov 2026 (§7). The decision stays **Accepted** on that revision. |
 
 Rules: we do not accept while a critical or major finding is open or any case is BLOCKED. Minor findings must be fixed or listed above as accepted limitations.
 
-Recorded by: `<name>` · Sent to Product Team: `<date-time, IG link/screenshot>`
+Recorded by: Naphat Utabuawong · Sent to Product Team: 25 Nov 2026 15:29 (Asia/Bangkok), IG group CPE334_Lab, decided by Naphat Utabuawong and Nantakorn Pinsupaporn (EV-D-01)
 
 ## 9. Evidence index
 
 File name pattern (Product Team's convention): `EV-<case>-<step>_<short-note>_<YYYY-MM-DDTHHMM>.png`, for example `EV-UAT04-9_state-unchanged_2026-11-25T1010.png`.
 
-| Evidence ID | File | Case / step | What it shows | Time | Version |
-|---|---|---|---|---|---|
-All files are in `evidence/`. Tester: Naphat unless stated. Version for all: `v1.0.1-uat / 0b2cc80`.
+All files are in `evidence/`. Tester: Naphat unless stated. Version: `v1.0.1-uat / 0b2cc80` for the S1 and S2 rows (24 Nov 2026); `v2.0.1-lab6 / 6f49d32` for the S3 rows (EV-VER-S3, EV-RT-…, 26 Nov 2026).
 
-| Evidence ID | File | Case / step | What it shows | Time (24 Nov 2026) |
+| Evidence ID | File | Case / step | What it shows | Time (24 Nov 2026 unless stated) |
 |---|---|---|---|---|
 | EV-VER-S1 | `EV-VER-S1_api-ready-start_2026-11-24T1310.png` | – | `/api/ready`: ready, connected, `0b2cc804…` | 13:10 |
 | EV-PRE-1…6 | `EV-PRE-1_login-organizer-a_…T1314.png` … `EV-PRE-6_inactive-x-rejected_…T1317.png` | X-03 | Account check: 5 logins succeed, `inactive.x` refused | 13:14–13:17 |
@@ -286,3 +281,4 @@ All files are in `evidence/`. Tester: Naphat unless stated. Version for all: `v1
 | EV-RT-B | `EV-RT-B_console-table-409_2026-11-26T2010.png` | §7 / B1–B5 | Console table: 409 ALREADY_REGISTERED ×3, seats unchanged, 1 own registration | 20:10 (26 Nov) |
 | EV-RT-C1 … C3 | `EV-RT-C1_reload-2-of-3-active-1_…T2013.png` … `EV-RT-C3_roster-1-of-3-one-row_…T2016.png` | §7 / C1–C3 | UI confirmation after the API attempts | 20:13–20:16 (26 Nov) |
 | EV-RT-UAT02-1 … 7 | `EV-RT-UAT02-1_published-2-of-2_…T2022.png` … `EV-RT-UAT02-7_roster-2-of-2_…T2028.png` (6a) | §7 / UAT-02 re-run | One file per step | 20:22–20:28 (26 Nov) |
+| EV-D-01 | `EV-D-01_decision-sent-ig_2026-11-25T1529.png` | §8 | IG message to the Product Team: decision **Accepted**, `v1.0.1-uat / 0b2cc80 / scccd8b05-00009-vvq`, 7/7 PASS, no findings, no limitations | 15:29 (25 Nov) |
