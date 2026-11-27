@@ -64,6 +64,7 @@ Requirement → feature → sprint → acceptance criterion → planned test →
 | FR-08, BR-05 | F-05 | 2 | AC-05-3, AC-05-4 | T-05-01, T-05-05, T-05-06, T-05-07 | `server/tests/drafts.test.ts`, `server/tests/drafts.int.test.ts` | PLANNED (F-05 v1 contract) | – |
 | NFR-03 | F-05 | 2 | AC-05-5, AC-05-7, AC-05-11 | T-05-08, T-05-11, T-05-15 | `server/tests/drafts.int.test.ts` | PLANNED (F-05 v1 contract) | – |
 | FR-03, FR-07, BR-07 | F-05 | 2 | AC-05-6, AC-05-8, AC-05-9 | T-05-09, T-05-10, T-05-12, T-05-13 | `server/tests/drafts.int.test.ts` | PLANNED (F-05 v1 contract) | – |
-| FR-04, FR-08 | F-05 | 2 | AC-05-10, AC-05-12 | T-05-14, T-05-17..T-05-23 | `server/tests/drafts.int.test.ts`, `client/src/requests/*Draft*.test.tsx` | PLANNED (F-05 v1 contract) | – |
+| FR-04, FR-08 | F-05 | 2 | AC-05-10, AC-05-12 | T-05-14, T-05-17..T-05-23 | `server/tests/drafts.int.test.ts`; `client/src/requests/NewRequestPage.test.tsx`, `RequestDetailPage.draft.test.tsx`, `EditRequestPage.test.tsx`, `MyRequestsPage.test.tsx` | PLANNED (F-05 v2 contract) | – |
+| FR-08, NFR-03 | F-05 | 2 | AC-05-1, AC-05-3, AC-05-5, AC-05-6, AC-05-12 | E2E-05 | `e2e/tests/sprint2.spec.ts` (draft journey) | PLANNED (F-05 v2 contract) | – |
 
 Do not mark a row PASS until the test has run on the stated commit.
