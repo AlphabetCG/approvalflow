@@ -238,4 +238,48 @@ describe("RequestDetailPage decisions (F-04b)", () => {
     expect(field()).toHaveValue("A long enough reason");
     expect(field()).toBeEnabled();
   });
+
+  // ---- CR-01 (#45, Lab 7, F-04 v4): an approval above 20,000.00 THB needs a comment ----
+  const HIGH_VALUE = "Approving a request over 20,000 THB needs a comment of at least 10 characters";
+
+  // T-04-28 (AC-04-15) — red on the pre-change code: no hint, and approve sends the request.
+  it("tells the reviewer that a 20,000.01 THB request needs a comment to approve", async () => {
+    mockApi({ "GET /api/requests/r1": [json(200, { ...submitted, amount: "20000.01" })] });
+    renderAs(chai.id);
+    await screen.findByRole("region", { name: "Decision" });
+
+    expect(field()).toHaveAccessibleDescription(
+      "Required when approving a request over 20,000 THB and when rejecting (10–1000 characters).",
+    );
+  });
+
+  // T-04-28 (AC-04-15)
+  it.each(["", "too short"])("asks for a comment of 10+ characters before approving 20,000.01 THB (%j)", async (comment) => {
+    const calls = mockApi({ "GET /api/requests/r1": [json(200, { ...submitted, amount: "20000.01" })] });
+    renderAs(chai.id);
+    const user = userEvent.setup();
+    await screen.findByRole("region", { name: "Decision" });
+
+    if (comment) await user.type(field(), comment);
+    await user.click(screen.getByRole("button", { name: "Approve" }));
+
+    expect(field()).toHaveAccessibleDescription(HIGH_VALUE);
+    expect(calls.map((c) => c.key)).toEqual(["GET /api/requests/r1"]);
+  });
+
+  // T-04-29 (AC-04-15, AC-04-2) — guard: at exactly 20,000.00 the comment stays optional.
+  it("approves a 20,000.00 THB request without a comment", async () => {
+    const calls = mockApi({
+      "GET /api/requests/r1": [json(200, { ...submitted, amount: "20000.00" })],
+      "POST /api/requests/r1/approve": [json(200, decisionBy("APPROVE", "APPROVED", null))],
+    });
+    renderAs(chai.id);
+    const user = userEvent.setup();
+    await screen.findByRole("region", { name: "Decision" });
+
+    await user.click(screen.getByRole("button", { name: "Approve" }));
+
+    expect(await screen.findByRole("status")).toHaveTextContent("Request approved.");
+    expect(calls.find((c) => c.key.startsWith("POST"))?.body).toEqual({});
+  });
 });

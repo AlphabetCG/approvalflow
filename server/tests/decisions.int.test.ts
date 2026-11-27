@@ -22,7 +22,12 @@ async function signedIn(user: TestUser) {
 async function makeRequest(
   requester: TestUser,
   reviewer: TestUser,
-  overrides: Partial<{ title: string; submittedAt: Date; status: "SUBMITTED" | "APPROVED" | "REJECTED" }> = {},
+  overrides: Partial<{
+    title: string;
+    submittedAt: Date;
+    status: "SUBMITTED" | "APPROVED" | "REJECTED";
+    amount: string;
+  }> = {},
 ) {
   return prisma.request.create({
     data: {
@@ -30,7 +35,7 @@ async function makeRequest(
       reviewerId: reviewer.id,
       title: overrides.title ?? "Conference travel",
       category: "TRAVEL",
-      amount: 1500,
+      amount: overrides.amount ?? 1500,
       description: "Train tickets",
       status: overrides.status ?? "SUBMITTED",
       submittedAt: overrides.submittedAt ?? new Date(),
@@ -45,6 +50,9 @@ const state = async (id: string) => {
 };
 
 const unchanged = { status: "SUBMITTED", decisions: 0 };
+
+// CR-01 (#45, F-04 v4): BR-08 message for an approval above 20,000 THB.
+const HIGH_VALUE = "Approving a request over 20,000 THB needs a comment of at least 10 characters";
 
 let requester: TestUser;
 let reviewer: TestUser;
@@ -273,5 +281,66 @@ describe("POST /api/requests/:id/approve and /reject", () => {
       await prisma.$executeRawUnsafe(`DROP TRIGGER slow_request_update ON "Request"`);
       await prisma.$executeRawUnsafe(`DROP FUNCTION slow_request_update()`);
     }
+  });
+
+  // ---- CR-01 (#45, Lab 7): an approval above 20,000.00 THB needs a comment (BR-08, D-17) ----
+
+  // T-04-25 (AC-04-13) — red on the pre-change code: it answers 200 and approves.
+  it.each([
+    ["no body", undefined],
+    ["a blank comment", { reason: "   " }],
+    ["a 9-character comment", { reason: "  123456789  " }],
+  ])("refuses to approve a 20,000.01 THB request with %s (400), changing nothing", async (_name, body) => {
+    const r = await makeRequest(requester, reviewer, { amount: "20000.01" });
+
+    const res = await (await signedIn(reviewer)).post(`/api/requests/${r.id}/approve`).send(body ?? {});
+
+    expect(res.status).toBe(400);
+    expect(res.body).toEqual({
+      error: "VALIDATION_ERROR",
+      message: HIGH_VALUE,
+      details: [{ field: "reason", message: HIGH_VALUE }],
+    });
+    expect(await state(r.id)).toEqual(unchanged);
+  });
+
+  // T-04-26 (AC-04-13, AC-04-2) — guard: passes before and after the change.
+  it.each([
+    ["20000.01", { reason: "  Budget line 4.2 agreed  " }, "Budget line 4.2 agreed"],
+    ["20000.00", undefined, null],
+  ])("approves a %s THB request with the comment it needs", async (amount, body, storedReason) => {
+    const r = await makeRequest(requester, reviewer, { amount });
+
+    const res = await (await signedIn(reviewer)).post(`/api/requests/${r.id}/approve`).send(body ?? {});
+
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({ status: "APPROVED", decision: { action: "APPROVE", reason: storedReason } });
+    expect(await state(r.id)).toEqual({ status: "APPROVED", decisions: 1 });
+  });
+
+  // T-04-27 (AC-04-14, D-13, BR-01, BR-02) — guard: the access and state checks still come first.
+  it("keeps 404 / 403 / 409 ahead of the comment rule for a 20,000.01 THB request", async () => {
+    const outsider = await signedIn(await createUser({ role: "REVIEWER", department: "ENGINEERING" }));
+    const notMine = await makeRequest(requester, reviewer, { amount: "20000.01" });
+    const unknown = await outsider.post("/api/requests/cmzzzzzzzzzzzzzzzzzzzzzzz/approve").send({});
+    const asOutsider = await outsider.post(`/api/requests/${notMine.id}/approve`).send({});
+    expect(asOutsider.status).toBe(404);
+    expect(asOutsider.body).toEqual(unknown.body);
+    expect(await state(notMine.id)).toEqual(unchanged);
+
+    const agent = await signedIn(reviewer);
+    const rejected = await makeRequest(requester, reviewer, { amount: "20000.01" });
+    expect((await agent.post(`/api/requests/${rejected.id}/reject`).send({ reason: "Over the yearly budget" })).status).toBe(200);
+    const again = await agent.post(`/api/requests/${rejected.id}/approve`).send({});
+    expect(again.status).toBe(409);
+    expect(again.body).toEqual({ error: "CONFLICT", message: "This request is already REJECTED" });
+    expect(await state(rejected.id)).toEqual({ status: "REJECTED", decisions: 1 });
+
+    const otherReviewer = await createUser({ role: "REVIEWER", department: "ENGINEERING" });
+    const own = await makeRequest(reviewer, otherReviewer, { amount: "20000.01" });
+    const ownRes = await agent.post(`/api/requests/${own.id}/approve`).send({});
+    expect(ownRes.status).toBe(403);
+    expect(ownRes.body).toEqual({ error: "FORBIDDEN", message: "You cannot decide on your own request" });
+    expect(await state(own.id)).toEqual(unchanged);
   });
 });
