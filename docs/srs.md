@@ -79,3 +79,9 @@ Excluded: real payments, email notifications, self-registration, password recove
 | D-15 | Review queue: assigned SUBMITTED requests, oldest first, no paging in Sprint 1 (see F-04) | Accepted (PR #15 review, 2026-11-13) |
 | D-16 | Decisions are final in Sprint 1; return for changes is F-06 in Sprint 2 (see F-04) | Accepted (PR #15 review, 2026-11-13) |
 | D-17 | BR-08: an approval above 20,000.00 THB needs a comment of 10–1000 characters; checked after the access and state checks, so outsiders still get 404 and decided requests 409 (see F-04 v4) | Proposed 2026-11-27 (CR-01, #45); accepted in the contract PR review |
+| D-18 | A draft is validated with the same rules as a submit (F-02); no half-filled drafts (see F-05) | Proposed 2026-11-27 (F-05, #48) |
+| D-19 | A draft has no reviewer and no `submittedAt`; the reviewer is assigned (D-01) when it is submitted (see F-05) | Proposed 2026-11-27 (F-05, #48) |
+| D-20 | Drafts use `POST /api/requests/drafts`, `PATCH /api/requests/:id` (full body, only in DRAFT; F-06 adds RETURNED) and `POST /api/requests/:id/submit` (see F-05) | Proposed 2026-11-27 (F-05, #48) |
+| D-21 | Only the requester reads, edits or submits a draft; anyone else gets 404 like D-10 (see F-05) | Proposed 2026-11-27 (F-05, #48) |
+| D-22 | History: `CREATE_DRAFT` (null → DRAFT) and `SUBMIT` (DRAFT → SUBMITTED); editing a draft writes no row (see F-05) | Proposed 2026-11-27 (F-05, #48) |
+| D-23 | My requests lists drafts first (newest created first), then the rest by `submittedAt`; revises the order of D-11 (see F-05) | Proposed 2026-11-27 (F-05, #48) |
