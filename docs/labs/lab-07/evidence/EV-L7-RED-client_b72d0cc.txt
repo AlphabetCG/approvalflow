@@ -1,0 +1,53 @@
+$ cd client && npx vitest run src/requests/RequestDetailPage.decision.test.tsx   # commit b72d0cc433cfd57fa98960965a493b461af212c5, 2026-11-27T15:57:23Z, node v24.14.0
+
+ RUN  v5.1.0 C:/Users/putte/Documents/GitHub/approvalflow/client
+
+ ❯ src/requests/RequestDetailPage.decision.test.tsx (14 tests | 3 failed) 2317ms
+   ❯ RequestDetailPage decisions (F-04b) (14)
+     × tells the reviewer that a 20,000.01 THB request needs a comment to approve 33ms
+     × asks for a comment of 10+ characters before approving 20,000.01 THB ("") 41ms
+     × asks for a comment of 10+ characters before approving 20,000.01 THB ("too short") 205ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/requests/RequestDetailPage.decision.test.tsx > RequestDetailPage decisions (F-04b) > tells the reviewer that a 20,000.01 THB request needs a comment to approve
+Error: expect(element).toHaveAccessibleDescription()
+
+Expected element to have accessible description:
+  Required when approving a request over 20,000 THB and when rejecting (10–1000 characters).
+Received:
+  Optional when approving. Required when rejecting (10–1000 characters).
+ ❯ src/requests/RequestDetailPage.decision.test.tsx:251:21
+    249|     await screen.findByRole("region", { name: "Decision" });
+    250|
+    251|     expect(field()).toHaveAccessibleDescription(
+       |                     ^
+    252|       "Required when approving a request over 20,000 THB and when reje…
+    253|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/requests/RequestDetailPage.decision.test.tsx > RequestDetailPage decisions (F-04b) > asks for a comment of 10+ characters before approving 20,000.01 THB ("")
+ FAIL  src/requests/RequestDetailPage.decision.test.tsx > RequestDetailPage decisions (F-04b) > asks for a comment of 10+ characters before approving 20,000.01 THB ("too short")
+Error: expect(element).toHaveAccessibleDescription()
+
+Expected element to have accessible description:
+  Approving a request over 20,000 THB needs a comment of at least 10 characters
+Received:
+  Optional when approving. Required when rejecting (10–1000 characters).
+ ❯ src/requests/RequestDetailPage.decision.test.tsx:266:21
+    264|     await user.click(screen.getByRole("button", { name: "Approve" }));
+    265|
+    266|     expect(field()).toHaveAccessibleDescription(HIGH_VALUE);
+       |                     ^
+    267|     expect(calls.map((c) => c.key)).toEqual(["GET /api/requests/r1"]);
+    268|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 11 passed (14)
+   Start at  22:57:25
+   Duration  4.10s (tests 60%, environment 30%, import 5%, setup 4%, transform 1%)
+

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { validateDecision } from "../src/requests/decision-validation";
+import { Prisma } from "@prisma/client";
+import { requiresApproveComment, validateDecision } from "../src/requests/decision-validation";
 import { nextStatus } from "../src/requests/transitions";
 
 describe("nextStatus (F-04 state machine)", () => {
@@ -69,5 +70,17 @@ describe("validateDecision: approve (D-14)", () => {
     ["a number", { reason: 5 }],
   ])("rejects a comment of %s", (_name, body) => {
     expect(errorsFor("APPROVE", body)).toEqual(["reason"]);
+  });
+});
+
+// T-04-24 (AC-04-13, BR-08) — CR-01: the threshold is exact on Decimal values.
+describe("requiresApproveComment (CR-01)", () => {
+  it.each([
+    ["20000.00", false],
+    ["20000.01", true],
+    ["0.01", false],
+    ["100000.00", true],
+  ])("%s THB -> %s", (amount, expected) => {
+    expect(requiresApproveComment(new Prisma.Decimal(amount))).toBe(expected);
   });
 });
