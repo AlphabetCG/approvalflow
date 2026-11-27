@@ -1,7 +1,7 @@
 # Lab 6 — Controlled defect exercise DEF-EX-01
 
 **Product Team:** TH-005_P5 (ApprovalFlow) · **UAT Team:** TH-001_P3 (LoungCheu)
-**Version history:** v1 (2026-11-26) – defect, RED, GREEN, PR; v2 (2026-11-27) – release, deployed revision and TH-001_P3 acceptance decision recorded; retest pending
+**Version history:** v1 (2026-11-26) – defect, RED, GREEN, PR; v2 (2026-11-27) – release, deployed revision and TH-001_P3 acceptance decision recorded; v3 (2026-11-27) – TH-001_P3 retest of UAT-04 on `approvalflow-00007-sbv`: PASS
 
 > **This exercise is separate from the Sprint 1 acceptance.** Sprint 1 was accepted by TH-001_P3 on release `v0.2.0` (`1cbd8b4`, revision `approvalflow-00006-8bp`). TH-001_P3 and the TA then approved this exercise. The defect was injected on purpose on a branch. It ran only in CI and was **never merged on its own, released, or deployed**. The release that comes out of it is a new version with the fix, not a change to what was accepted.
 
@@ -51,15 +51,32 @@ Run on the revision in row 6, after we announce it. Use the UAT-04 steps in [uat
 | 6b | Sign out; sign in as the Engineering reviewer who is **not** assigned (rev.eng1 if step 1 said rev.eng2, otherwise rev.eng2). Repeat both calls from 6a. | Both print `404 …Request not found`. |
 | 7 | (as in the handoff) Sign in as the assigned Engineering reviewer; open the request. | Status still `SUBMITTED`; History has only "Submitted". |
 
+### Retest result (sent by TH-001_P3 in the IG group)
+
 | Field | Result |
 |---|---|
-| Tester / team | |
-| Date and time | |
-| Version tested (commit / revision) | |
-| Inputs (request id, accounts) | |
-| Actual result | |
-| PASS / FAIL / BLOCKED | |
-| Screenshot IDs | |
+| Tester / team | Paphangkorn Luanseng / TH-001_P3 |
+| Date and time | 27 Nov 2026, 15:34–15:57 (Asia/Bangkok) |
+| Version tested | `18438b3` · `approvalflow-00007-sbv` (footer on the login page, EV-RT04-0) = rows 5 and 6 above |
+| Inputs | Request `UAT-TH001-04 Monitor` (Equipment, 5,900.00, "Second screen"), id `cmwyqb5h50001s601y7kuix6y`, submitted 15:38 by req.eng1, assigned to **rev.eng1**. Accounts: req.eng1, req.fin1, rev.fin1, rev.eng2 (not assigned), rev.eng1 (assigned) |
+| **Result** | **PASS** |
+
+| Step | Account | Actual result | Evidence |
+|---|---|---|---|
+| 0 | – | Login page footer: "Version 18438b3 · approvalflow-00007-sbv" | EV-RT04-0 |
+| 1 | req.eng1 → rev.eng1 | Request submitted; it is in rev.eng1's (Chai) Review queue | EV-RT04-1 |
+| 2 | req.fin1 (Ekachai) | Request URL: "Request not found." | EV-RT04-2 |
+| 3 | req.fin1 | No "Review queue" link; `/reviews`: "Requires role REVIEWER", no requests | EV-RT04-3 |
+| 4 | req.fin1 | Id changed by one character: the same "Request not found." page | EV-RT04-4 |
+| 5 | rev.fin1 (Fah) | Request URL: "Request not found.", no Decision section | EV-RT04-5 |
+| 6 | rev.fin1 | Review queue does not list `UAT-TH001-04 Monitor` | EV-RT04-6 |
+| **6a** | rev.fin1 | DevTools Console: `approve` → `404 {"error":"NOT_FOUND","message":"Request not found"}`; `reject` → the same 404 (Network tab: 2 × 404) | EV-RT04-6a |
+| **6b** | rev.eng2 (Duangjai, same department, not assigned) | Console: `approve` and `reject` → both `404 {"error":"NOT_FOUND","message":"Request not found"}` | EV-RT04-6b |
+| 7 | rev.eng1 (Chai, assigned) | Status `SUBMITTED`; History has only "Submitted by Anan · – → SUBMITTED · 15:38"; Decision section shown; not decided | EV-RT04-7 |
+
+DEF-EX-01 is fixed on the deployed revision: neither an unassigned reviewer of another department (6a) nor one of the same department (6b) could decide, and the request and its History did not change (7). Issue #39 is closed with this result.
+
+Test data left on the system: `UAT-TH001-04 Monitor` (`SUBMITTED`, assigned to rev.eng1).
 
 ## 5. Acceptance
 
