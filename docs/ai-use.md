@@ -13,3 +13,4 @@
 | 2026-11-13 | Claude Code | F-04 contract v2 (UI section), F-04b review queue page, Decision section on the detail page, tests T-04-14..22 | _TODO_ |
 | 2026-11-15 | Claude Code | E2E test plan, Playwright set-up (config, DB reset/seed guard), four Sprint 1 journeys | _TODO_ |
 | 2026-11-22 | Claude Code | Lab 5 Ep.7 release B: home page sentence and its test (#30); staging fast-forwarded to main | _TODO_ |
+| 2026-11-27 | Claude Code | F-05 contract v1 (drafts: D-18..D-23, check order, migrations, AC-05-1..12, T-05-01..23), SRS/SDS/traceability rows; reviewed by Member A before code | _TODO_ |

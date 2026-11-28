@@ -72,10 +72,16 @@ Excluded: real payments, email notifications, self-registration, password recove
 | D-08 | User ids are cuid strings (see F-01) | Accepted (PR #11 review, 2026-11-11) |
 | D-09 | Sprint 1 roles are REQUESTER and REVIEWER; ADMIN comes in Sprint 2 (see F-01) | Accepted (PR #11 review, 2026-11-11) |
 | D-10 | A request is readable only by its requester and its assigned reviewer; anyone else gets 404, same as an unknown id (see F-03) | Accepted (PR #14 review, 2026-11-12) |
-| D-11 | "My requests" lists only the requests the user submitted, newest first (see F-03) | Accepted (PR #14 review, 2026-11-12) |
+| D-11 | "My requests" lists only the requests the user created (submitted ones and, from F-05, drafts); order revised by D-23 (see F-03, F-05) | Accepted (PR #14 review, 2026-11-12); text revised 2026-11-27 (F-05 v2, PR #56 review: "submitted" → "created") |
 | D-12 | No paging in Sprint 1; the list is wrapped in `{ "requests": [...] }` so paging can be added in F-08 (see F-03) | Accepted (PR #14 review, 2026-11-12) |
 | D-13 | Only the assigned reviewer decides; others get 404 like D-10, and a requester deciding on their own request gets 403 (see F-04) | Accepted (PR #15 review, 2026-11-13) |
 | D-14 | Reject needs a reason of 10–1000 characters; approve takes an optional comment up to 1000 (see F-04). **Revised by D-17** for approvals above 20,000.00 THB | Accepted (PR #15 review, 2026-11-13); revised 2026-11-27 (CR-01, #45) |
 | D-15 | Review queue: assigned SUBMITTED requests, oldest first, no paging in Sprint 1 (see F-04) | Accepted (PR #15 review, 2026-11-13) |
 | D-16 | Decisions are final in Sprint 1; return for changes is F-06 in Sprint 2 (see F-04) | Accepted (PR #15 review, 2026-11-13) |
 | D-17 | BR-08: an approval above 20,000.00 THB needs a comment of 10–1000 characters; checked after the access and state checks, so outsiders still get 404 and decided requests 409 (see F-04 v4) | Proposed 2026-11-27 (CR-01, #45); accepted in the contract PR review |
+| D-18 | A draft is validated with the same rules as a submit (F-02); no half-filled drafts; submit does not re-validate the stored fields (see F-05) | Proposed 2026-11-27 (F-05, #48) |
+| D-19 | A draft has no reviewer and no `submittedAt`; the reviewer is assigned (D-01) when it is submitted (see F-05) | Proposed 2026-11-27 (F-05, #48) |
+| D-20 | Drafts use `POST /api/requests/drafts`, `PATCH /api/requests/:id` (full body, only in DRAFT; F-06 adds RETURNED) and `POST /api/requests/:id/submit` (see F-05) | Proposed 2026-11-27 (F-05, #48) |
+| D-21 | Only the requester reads, edits or submits a draft; anyone else gets 404 like D-10 (see F-05) | Proposed 2026-11-27 (F-05, #48) |
+| D-22 | History: `CREATE_DRAFT` (null → DRAFT) and `SUBMIT` (DRAFT → SUBMITTED); editing a draft writes no row (see F-05) | Proposed 2026-11-27 (F-05, #48) |
+| D-23 | My requests lists drafts first (newest created first), then the rest by `submittedAt`, with an explicit NULLS FIRST query; revises D-11 (see F-05) | Proposed 2026-11-27 (F-05, #48) |
