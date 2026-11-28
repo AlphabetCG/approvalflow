@@ -1,5 +1,9 @@
 // Response shapes of the request API (contracts F-02 and F-03).
 
+// F-08: the statuses the API can return, for the Status filter. F-05 adds DRAFT and
+// F-06 RETURNED here when their migrations land (server: the RequestStatus enum).
+export const REQUEST_STATUSES = ["SUBMITTED", "APPROVED", "REJECTED"] as const;
+
 export interface UserRef {
   id: string;
   email: string;

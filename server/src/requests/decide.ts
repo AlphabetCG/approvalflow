@@ -2,6 +2,7 @@
 import type { PrismaClient, RequestStatus } from "@prisma/client";
 import { prisma as defaultDb } from "../db";
 import { badRequest, conflict, forbidden, notFound } from "../http";
+import { filterWhere, type RequestFilters } from "./filters";
 import { HIGH_VALUE_MESSAGE, MIN_REJECT_REASON, requiresApproveComment } from "./decision-validation";
 import { nextStatus, type DecisionAction } from "./transitions";
 
@@ -39,10 +40,14 @@ export interface Decision {
   decision: DecisionEntry;
 }
 
-// D-15: assigned SUBMITTED requests, oldest first.
-export async function listQueue(reviewerId: string, db: PrismaClient = defaultDb): Promise<QueueItem[]> {
+// D-15: assigned SUBMITTED requests, oldest first. F-08: optional filters, ANDed.
+export async function listQueue(
+  reviewerId: string,
+  filters: RequestFilters = {},
+  db: PrismaClient = defaultDb,
+): Promise<QueueItem[]> {
   const rows = await db.request.findMany({
-    where: { reviewerId, status: "SUBMITTED" },
+    where: { AND: [{ reviewerId, status: "SUBMITTED" }, filterWhere(filters)] },
     orderBy: [{ submittedAt: "asc" }, { id: "asc" }],
     select: { id: true, title: true, category: true, amount: true, submittedAt: true, requester: USER_REF },
   });

@@ -2,6 +2,7 @@
 // is readable by its requester or its assigned reviewer only (D-10, NFR-03).
 import type { PrismaClient } from "@prisma/client";
 import { prisma as defaultDb } from "../db";
+import { filterWhere, type RequestFilters } from "./filters";
 
 export interface UserRef {
   id: string;
@@ -44,9 +45,14 @@ export interface RequestDetail {
 
 const USER_REF = { select: { id: true, email: true, name: true } } as const;
 
-export async function listMyRequests(userId: string, db: PrismaClient = defaultDb): Promise<RequestListItem[]> {
+// F-08: optional filters, ANDed with the access rule, so they can only narrow the list.
+export async function listMyRequests(
+  userId: string,
+  filters: RequestFilters = {},
+  db: PrismaClient = defaultDb,
+): Promise<RequestListItem[]> {
   const rows = await db.request.findMany({
-    where: { requesterId: userId },
+    where: { AND: [{ requesterId: userId }, filterWhere(filters)] },
     orderBy: [{ submittedAt: "desc" }, { id: "desc" }],
     select: {
       id: true,

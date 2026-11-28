@@ -1,0 +1,22 @@
+ × src/requests/MyRequestsPage.filters.test.tsx > MyRequestsPage filters (F-08) > shows the filters from the URL and sends them to the API 287ms
+   → Unable to find an accessible element with the role "combobox" and name "Status"
+ × src/requests/MyRequestsPage.filters.test.tsx > MyRequestsPage filters (F-08) > refuses From after To without calling the API 37ms
+   → Unable to find a label with the text of: From
+ × src/requests/MyRequestsPage.filters.test.tsx > MyRequestsPage filters (F-08) > puts the filters in the URL on Apply and removes them on Clear 73ms
+   → Unable to find an accessible element with the role "combobox" and name "Status"
+ × src/requests/MyRequestsPage.filters.test.tsx > MyRequestsPage filters (F-08) > tells an empty filtered result apart from having no requests 1013ms
+   → Unable to find an element with the text: No requests match these filters.. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+ ✓ src/requests/MyRequestsPage.filters.test.tsx > MyRequestsPage filters (F-08) > keeps the F-03 empty text without filters 13ms
+ × src/requests/MyRequestsPage.filters.test.tsx > MyRequestsPage filters (F-08) > shows every message of a 400 and keeps the controls 17ms
+   → Unable to find an accessible element with the role "combobox" and name "Status"
+ × src/requests/MyRequestsPage.filters.test.tsx > ReviewQueuePage filters (F-08) > filters the queue by category, without a Status control 55ms
+   → Unable to find an accessible element with the role "combobox" and name "Category"
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+TestingLibraryElementError: Unable to find an accessible element with the role "combobox" and name "Status"
+TestingLibraryElementError: Unable to find a label with the text of: From
+TestingLibraryElementError: Unable to find an accessible element with the role "combobox" and name "Status"
+TestingLibraryElementError: Unable to find an element with the text: No requests match these filters.. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+TestingLibraryElementError: Unable to find an accessible element with the role "combobox" and name "Status"
+TestingLibraryElementError: Unable to find an accessible element with the role "combobox" and name "Category"
+ Test Files  1 failed (1)
+      Tests  6 failed | 1 passed (7)
