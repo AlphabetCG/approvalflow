@@ -10,6 +10,6 @@
 | F-04 | Reviewer queue and decision (approve/reject) | FR-05, FR-06, FR-07, BR-01, BR-02, BR-03, BR-06, BR-07 | F-02 | 1 |
 | F-05 | Drafts and editing rules ([contract](sprints/sprint-2/F-05.md)) | FR-08, FR-07, BR-05, BR-06, BR-07, NFR-03 | F-02, F-03 | 2 |
 | F-06 | Return and resubmit | FR-09 | F-04 | 2 |
-| F-07 | Multi-stage approval | FR-10 | F-04 | 2 |
+| F-07 | Multi-stage approval ([contract](sprints/sprint-2/F-07.md)) | FR-10, FR-05, FR-06, BR-01, BR-07, BR-08, NFR-03 | F-04 | 2 |
 | F-08 | Filtering and search ([contract](sprints/sprint-2/F-08.md)) | FR-11, FR-04, FR-05, NFR-03 | F-03, F-04 | 2 |
-| F-09 | Decision summary report | FR-12 | F-04 | 3 |
+| F-09 | Decision summary report ([contract](sprints/sprint-3/F-09.md)) | FR-12, NFR-01, NFR-03 | F-04, F-08 | 3 |

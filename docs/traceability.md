@@ -71,5 +71,14 @@ Requirement → feature → sprint → acceptance criterion → planned test →
 | FR-11, FR-05 | F-08 | 2 | AC-08-7 | T-08-08, T-08-09 | `server/tests/filters.int.test.ts` | PLANNED (F-08 v1 contract) | – |
 | FR-11, FR-08 | F-08 | 2 | AC-08-8 | T-08-11 | `server/tests/filters.int.test.ts` (after F-05) | PLANNED (F-08 v1 contract) | – |
 | FR-11 | F-08 | 2 | AC-08-10 | T-08-12..T-08-17 | `client/src/requests/MyRequestsPage.filters.test.tsx`, `client/src/reviews/ReviewQueuePage.filters.test.tsx` | PLANNED (F-08 v1 contract) | – |
+| FR-10 | F-07 | 2 | AC-07-1, AC-07-2 | T-07-01, T-07-03, T-07-04, T-07-05 | `server/tests/decisions.test.ts`, `server/tests/second-review.int.test.ts` | PLANNED (F-07 v1 contract) | – |
+| FR-10, FR-05 | F-07 | 2 | AC-07-3, AC-07-4 | T-07-02, T-07-06, T-07-07 | `server/tests/decisions.test.ts`, `server/tests/second-review.int.test.ts` | PLANNED (F-07 v1 contract) | – |
+| FR-10, BR-01, NFR-03 | F-07 | 2 | AC-07-5, AC-07-6 | T-07-08, T-07-09 | `server/tests/second-review.int.test.ts` | PLANNED (F-07 v1 contract) | – |
+| FR-10, BR-07, BR-08 | F-07 | 2 | AC-07-7, AC-07-8 | T-07-10, T-07-11 | `server/tests/second-review.int.test.ts` | PLANNED (F-07 v1 contract) | – |
+| FR-10 | F-07 | 2 | AC-07-9, AC-07-6 | T-07-12..T-07-15 | `client/src/requests/RequestDetailPage.second.test.tsx`, `client/src/reviews/ReviewQueuePage.test.tsx` | PLANNED (F-07 v1 contract) | – |
+| FR-12 | F-09 | 3 | AC-09-1, AC-09-6, AC-09-7 | T-09-01, T-09-02, T-09-07 | `server/tests/summary.test.ts`, `server/tests/summary.int.test.ts` | PLANNED (F-09 v1 contract) | – |
+| FR-12, NFR-03 | F-09 | 3 | AC-09-2, AC-09-3, AC-09-4 | T-09-03, T-09-04, T-09-05 | `server/tests/summary.int.test.ts` | PLANNED (F-09 v1 contract) | – |
+| FR-12, NFR-01 | F-09 | 3 | AC-09-5 | T-09-06 | `server/tests/summary.int.test.ts` | PLANNED (F-09 v1 contract) | – |
+| FR-12 | F-09 | 3 | AC-09-8 | T-09-08..T-09-11 | `client/src/reviews/DecisionSummaryPage.test.tsx`, `client/src/App.test.tsx` | PLANNED (F-09 v1 contract) | – |
 
 Do not mark a row PASS until the test has run on the stated commit.

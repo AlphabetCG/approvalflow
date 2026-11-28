@@ -63,7 +63,7 @@ Excluded: real payments, email notifications, self-registration, password recove
 | ID | Item | Status |
 |---|---|---|
 | D-01 | Reviewer assignment: round-robin among reviewers in the requester's department, never the requester; 409 if nobody is eligible (see F-02) | Accepted (PR #10 review, 2026-11-06) |
-| D-02 | Second-stage threshold amount: _TODO_ | Open |
+| D-02 | Second-stage threshold: a request above 50,000.00 THB needs two approvals; at or below, one approval is final (see F-07) | Agreed in the team discussion 2026-11-28; Proposed 2026-11-28 (F-07, #50) |
 | D-03 | Request categories: TRAVEL, SUPPLIES, EQUIPMENT, TRAINING, OTHER (see F-02) | Accepted (PR #10 review, 2026-11-06) |
 | D-04 | Title (1–200 characters) and description (1–2000 characters) are both required (see F-02) | Accepted (PR #10 review, 2026-11-06) |
 | D-05 | Server-side sessions in the database with an HttpOnly cookie, no JWT (see F-01) | Accepted (PR #11 review, 2026-11-11) |
@@ -90,3 +90,12 @@ Excluded: real payments, email notifications, self-registration, password recove
 | D-26 | `from`/`to` are inclusive calendar dates in Asia/Bangkok (UTC+7) on `submittedAt`; `from` after `to` is a 400 (see F-08) | Proposed 2026-11-28 (F-08, #51) |
 | D-27 | A request without `submittedAt` (F-05 draft) never matches a date filter (see F-08) | Proposed 2026-11-28 (F-08, #51) |
 | D-28 | Bad filter values give 400 with per-field `details`; empty value = no filter; a repeated parameter is a 400; unknown parameters are ignored (see F-08) | Proposed 2026-11-28 (F-08, #51) |
+| D-34 | New status `SECOND_REVIEW`: a stage-1 approval above D-02 moves SUBMITTED → SECOND_REVIEW, the stage-2 approval → APPROVED; a reject at either stage → REJECTED (see F-07) | Proposed 2026-11-28 (F-07, #50) |
+| D-35 | `secondReviewerId` is set at the stage-1 approval by round-robin (D-01) among the department's reviewers, never the requester or the stage-1 reviewer (see F-07) | Proposed 2026-11-28 (F-07, #50) |
+| D-36 | No eligible second reviewer: the stage-1 approval is refused with 409 and nothing changes; reject still works (see F-07) | Proposed 2026-11-28 (F-07, #50) |
+| D-37 | Only the second reviewer acts in SECOND_REVIEW; the stage-1 reviewer gets 403; stage 2 has approve and reject only, return is 409 (see F-07) | Proposed 2026-11-28 (F-07, #50) |
+| D-38 | History reuses `APPROVE`/`REJECT` with the stage in the status columns; BR-08 applies at both stages (see F-07) | Proposed 2026-11-28 (F-07, #50) |
+| D-39 | `GET /api/reviews/summary` (REVIEWER only) summarizes the caller's own decisions; no parameter selects another reviewer (see F-09) | Proposed 2026-11-28 (F-09, #52) |
+| D-40 | A decision is a history row of the caller with action APPROVE, REJECT or (F-06) RETURN; each row counts once (see F-09) | Proposed 2026-11-28 (F-09, #52) |
+| D-41 | Summary `from`/`to` are inclusive Bangkok days on the decision time, with the F-08 parser and messages (see F-09) | Proposed 2026-11-28 (F-09, #52) |
+| D-42 | Summary body: from, to, approved, rejected, returned, total, approvedAmount (Decimal sum as a 2-decimal string) (see F-09) | Proposed 2026-11-28 (F-09, #52) |
