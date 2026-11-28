@@ -18,7 +18,7 @@ Why: same stack as Labs 1–4, and it matches the Lab 5 Starter Kit (one image o
 |---|---|---|
 | User | id, email, passwordHash, role, department | email unique; role in (REQUESTER, REVIEWER, ADMIN) |
 | Session | id, userId, expiresAt | stored in the database, not in memory |
-| Request | id, requesterId, reviewerId, title, category, amount, description, status, submittedAt, createdAt (F-05) | amount DECIMAL(12,2) > 0; reviewerId ≠ requesterId; F-05: reviewerId and submittedAt are NULL exactly when status = DRAFT |
+| Request | id, requesterId, reviewerId, title, category, amount, description, status, submittedAt, createdAt (F-05) | amount DECIMAL(12,2) > 0; reviewerId ≠ requesterId; F-05: reviewerId and submittedAt are NULL exactly when status = DRAFT; F-07: secondReviewerId (nullable) ≠ requesterId, ≠ reviewerId, set when status = SECOND_REVIEW |
 | RequestHistory | id, requestId, actorId, fromStatus, toStatus, action, reason, createdAt | insert only |
 
 _TODO: ER diagram._
@@ -35,6 +35,9 @@ _TODO: ER diagram._
 | SUBMITTED | reject (reason) | REJECTED | assigned reviewer (not the requester) |
 | _Sprint 2:_ SUBMITTED | return (reason) | RETURNED | assigned reviewer |
 | _Sprint 2:_ RETURNED | resubmit | SUBMITTED | requester |
+| _Sprint 2 (F-07):_ SUBMITTED | approve, amount > 50,000.00 (D-02) | SECOND_REVIEW (second reviewer assigned, D-35) | stage-1 reviewer |
+| _Sprint 2 (F-07):_ SECOND_REVIEW | approve | APPROVED | second reviewer only (D-37) |
+| _Sprint 2 (F-07):_ SECOND_REVIEW | reject (reason) | REJECTED | second reviewer only (D-37) |
 
 Any other transition returns 409.
 
@@ -47,6 +50,8 @@ Any other transition returns 409.
 | View assigned requests | – | ✓ (assigned only) | – |
 | Approve / reject | – | ✓ (assigned, not own) | – |
 | Save, edit, submit own draft (F-05) | ✓ | ✓ | – |
+| Second-stage approve / reject (F-07) | – | ✓ (second reviewer only) | – |
+| Own decision summary (F-09) | – | ✓ (own decisions only) | – |
 | Manage users (Sprint 2) | – | – | ✓ |
 
 Hiding a button in the UI is not authorization; every rule above is enforced in the API.

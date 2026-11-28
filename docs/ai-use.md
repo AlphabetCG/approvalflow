@@ -15,3 +15,5 @@
 | 2026-11-22 | Claude Code | Lab 5 Ep.7 release B: home page sentence and its test (#30); staging fast-forwarded to main | _TODO_ |
 | 2026-11-27 | Claude Code | F-05 contract v1 (drafts: D-18..D-23, check order, migrations, AC-05-1..12, T-05-01..23), SRS/SDS/traceability rows; reviewed by Member A before code | _TODO_ |
 | 2026-11-28 | Claude Code | F-08 contract v1 (filters: D-24..D-28, check order, validation messages, AC-08-1..10, T-08-01..17); reviewed by Member B before code | _TODO_ |
+| 2026-11-28 | Claude Code | F-08 implementation (filters.ts, FilterBar, useFilteredList; red/green tests T-08-01..17) | _TODO_ |
+| 2026-11-28 | Claude Code | F-07 contract v1 (D-02 = 50,000, D-34..D-38, two-stage check order, migration) and F-09 contract v1 (D-39..D-42, decision summary); for review by Member B before code | _TODO_ |
