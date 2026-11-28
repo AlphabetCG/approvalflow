@@ -47,6 +47,7 @@ Excluded: real payments, email notifications, self-registration, password recove
 | BR-05 | A request can be edited only in DRAFT or RETURNED. | 2 |
 | BR-06 | History entries are append-only. | 1 |
 | BR-07 | If two decisions arrive at the same time, only one is stored. | 1 |
+| BR-08 | Approving a request above 20,000.00 THB requires a comment of 10–1000 characters after trimming; at or below 20,000.00 the approve comment stays optional. Added by change request CR-01 (#45, Lab 7, 2026-11-27); before CR-01 the comment was optional for every amount. | 1 (changed) |
 
 ## 6. Non-functional requirements
 
@@ -74,6 +75,7 @@ Excluded: real payments, email notifications, self-registration, password recove
 | D-11 | "My requests" lists only the requests the user submitted, newest first (see F-03) | Accepted (PR #14 review, 2026-11-12) |
 | D-12 | No paging in Sprint 1; the list is wrapped in `{ "requests": [...] }` so paging can be added in F-08 (see F-03) | Accepted (PR #14 review, 2026-11-12) |
 | D-13 | Only the assigned reviewer decides; others get 404 like D-10, and a requester deciding on their own request gets 403 (see F-04) | Accepted (PR #15 review, 2026-11-13) |
-| D-14 | Reject needs a reason of 10–1000 characters; approve takes an optional comment up to 1000 (see F-04) | Accepted (PR #15 review, 2026-11-13) |
+| D-14 | Reject needs a reason of 10–1000 characters; approve takes an optional comment up to 1000 (see F-04). **Revised by D-17** for approvals above 20,000.00 THB | Accepted (PR #15 review, 2026-11-13); revised 2026-11-27 (CR-01, #45) |
 | D-15 | Review queue: assigned SUBMITTED requests, oldest first, no paging in Sprint 1 (see F-04) | Accepted (PR #15 review, 2026-11-13) |
 | D-16 | Decisions are final in Sprint 1; return for changes is F-06 in Sprint 2 (see F-04) | Accepted (PR #15 review, 2026-11-13) |
+| D-17 | BR-08: an approval above 20,000.00 THB needs a comment of 10–1000 characters; checked after the access and state checks, so outsiders still get 404 and decided requests 409 (see F-04 v4) | Proposed 2026-11-27 (CR-01, #45); accepted in the contract PR review |

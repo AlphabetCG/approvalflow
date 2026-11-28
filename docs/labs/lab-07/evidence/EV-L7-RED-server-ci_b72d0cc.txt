@@ -1,0 +1,21 @@
+# CI run 46029422189 (CI & Docker Build, workflow_dispatch) on b72d0cc (CR-01 RED). Step: Server - npm test. Excerpt.
+2026-11-27T15:57:55.2633270Z  ❯  integration  tests/decisions.int.test.ts (28 tests | 3 failed) 1577ms
+2026-11-27T15:57:55.2666896Z      × refuses to approve a 20,000.01 THB request with no body (400), changing nothing 37ms
+2026-11-27T15:57:55.2667793Z      × refuses to approve a 20,000.01 THB request with a blank comment (400), changing nothing 28ms
+2026-11-27T15:57:55.2668712Z      × refuses to approve a 20,000.01 THB request with a 9-character comment (400), changing nothing 30ms
+2026-11-27T15:57:55.2669435Z      ✓ approves a 20000.01 THB request with the comment it needs 49ms
+2026-11-27T15:57:55.2670042Z      ✓ approves a 20000.00 THB request with the comment it needs 30ms
+2026-11-27T15:57:55.2670697Z      ✓ keeps 404 / 403 / 409 ahead of the comment rule for a 20,000.01 THB request 52ms
+2026-11-27T15:57:59.4826972Z  FAIL   integration  tests/decisions.int.test.ts > POST /api/requests/:id/approve and /reject > refuses to approve a 20,000.01 THB request with no body (400), changing nothing
+2026-11-27T15:57:59.4828113Z  FAIL   integration  tests/decisions.int.test.ts > POST /api/requests/:id/approve and /reject > refuses to approve a 20,000.01 THB request with a blank comment (400), changing nothing
+2026-11-27T15:57:59.4829533Z  FAIL   integration  tests/decisions.int.test.ts > POST /api/requests/:id/approve and /reject > refuses to approve a 20,000.01 THB request with a 9-character comment (400), changing nothing
+2026-11-27T15:57:59.4830511Z AssertionError: expected 200 to be 400 // Object.is equality
+2026-11-27T15:57:59.4831877Z  ❯ tests/decisions.int.test.ts:298:24
+2026-11-27T15:57:59.4903823Z  Test Files  1 failed | 12 passed (13)
+2026-11-27T15:57:59.4904541Z       Tests  3 failed | 181 passed (184)
+2026-11-27T15:57:59.4943609Z ##[error]AssertionError: expected 200 to be 400 // Object.is equality
+ ❯ tests/decisions.int.test.ts:298:24
+2026-11-27T15:57:59.4952876Z ##[error]AssertionError: expected 200 to be 400 // Object.is equality
+ ❯ tests/decisions.int.test.ts:298:24
+2026-11-27T15:57:59.4954840Z ##[error]AssertionError: expected 200 to be 400 // Object.is equality
+ ❯ tests/decisions.int.test.ts:298:24

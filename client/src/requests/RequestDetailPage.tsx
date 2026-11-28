@@ -116,7 +116,7 @@ export default function RequestDetailPage({ currentUserId }: { currentUserId: st
           <dd className="description">{r.description}</dd>
         </dl>
       </section>
-      {canDecide && <DecisionSection requestId={r.id} onDecided={applyDecision} onStale={refused} />}
+      {canDecide && <DecisionSection requestId={r.id} amount={r.amount} onDecided={applyDecision} onStale={refused} />}
       <section aria-labelledby="history-heading">
         <h2 id="history-heading">History</h2>
         <ol className="history">

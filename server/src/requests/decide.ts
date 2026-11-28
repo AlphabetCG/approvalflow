@@ -1,7 +1,8 @@
 // F-04: approve or reject a request, and the reviewer's queue.
 import type { PrismaClient, RequestStatus } from "@prisma/client";
 import { prisma as defaultDb } from "../db";
-import { conflict, forbidden, notFound } from "../http";
+import { badRequest, conflict, forbidden, notFound } from "../http";
+import { HIGH_VALUE_MESSAGE, MIN_REJECT_REASON, requiresApproveComment } from "./decision-validation";
 import { nextStatus, type DecisionAction } from "./transitions";
 
 const USER_REF = { select: { id: true, email: true, name: true } } as const;
@@ -48,7 +49,7 @@ export async function listQueue(reviewerId: string, db: PrismaClient = defaultDb
   return rows.map((r) => ({ ...r, amount: r.amount.toFixed(2), submittedAt: r.submittedAt.toISOString() }));
 }
 
-// Checks 4–7 of the contract, in order. The status update is conditional
+// Checks 4–8 of the contract (F-04 v4), in order. The status update is conditional
 // (WHERE status = current), so of two simultaneous decisions only one
 // updates the row (BR-07); the history row is in the same transaction.
 export async function decide(
@@ -64,13 +65,19 @@ export async function decide(
     // loaded (T-04-09, T-04-23).
     const r = await tx.request.findFirst({
       where: { id: requestId, OR: [{ requesterId: reviewerId }, { reviewerId }] },
-      select: { status: true, requesterId: true },
+      select: { status: true, requesterId: true, amount: true },
     });
     if (!r) throw notFound("Request not found");
     if (r.requesterId === reviewerId) throw forbidden("You cannot decide on your own request");
 
     const to = nextStatus(r.status, action);
     if (!to) throw conflict(`This request is already ${r.status}`);
+
+    // Check 7, CR-01 (BR-08, D-17): only after 404 / 403 / 409, so an outsider
+    // cannot learn the amount from a 400. `reason` is already trimmed.
+    if (action === "APPROVE" && requiresApproveComment(r.amount) && (reason ?? "").length < MIN_REJECT_REASON) {
+      throw badRequest(HIGH_VALUE_MESSAGE, [{ field: "reason", message: HIGH_VALUE_MESSAGE }]);
+    }
 
     const updated = await tx.request.updateMany({
       where: { id: requestId, reviewerId, status: r.status },
