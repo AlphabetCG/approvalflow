@@ -66,10 +66,10 @@ Requirement → feature → sprint → acceptance criterion → planned test →
 | FR-03, FR-07, BR-07 | F-05 | 2 | AC-05-6, AC-05-8, AC-05-9 | T-05-09, T-05-10, T-05-12, T-05-13 | `server/tests/drafts.int.test.ts` | PLANNED (F-05 v1 contract) | – |
 | FR-04, FR-08 | F-05 | 2 | AC-05-10, AC-05-12 | T-05-14, T-05-17..T-05-23 | `server/tests/drafts.int.test.ts`; `client/src/requests/NewRequestPage.test.tsx`, `RequestDetailPage.draft.test.tsx`, `EditRequestPage.test.tsx`, `MyRequestsPage.test.tsx` | PLANNED (F-05 v2 contract) | – |
 | FR-08, NFR-03 | F-05 | 2 | AC-05-1, AC-05-3, AC-05-5, AC-05-6, AC-05-12 | E2E-05 | `e2e/tests/sprint2.spec.ts` (draft journey) | PLANNED (F-05 v2 contract) | – |
-| FR-11 | F-08 | 2 | AC-08-1..AC-08-5 | T-08-01..T-08-06 | `server/tests/filters.test.ts`, `server/tests/filters.int.test.ts` | PLANNED (F-08 v1 contract) | – |
-| FR-11, NFR-03 | F-08 | 2 | AC-08-6, AC-08-9 | T-08-07, T-08-10 | `server/tests/filters.int.test.ts` | PLANNED (F-08 v1 contract) | – |
-| FR-11, FR-05 | F-08 | 2 | AC-08-7 | T-08-08, T-08-09 | `server/tests/filters.int.test.ts` | PLANNED (F-08 v1 contract) | – |
-| FR-11, FR-08 | F-08 | 2 | AC-08-8 | T-08-11 | `server/tests/filters.int.test.ts` (after F-05) | PLANNED (F-08 v1 contract) | – |
-| FR-11 | F-08 | 2 | AC-08-10 | T-08-12..T-08-17 | `client/src/requests/MyRequestsPage.filters.test.tsx`, `client/src/reviews/ReviewQueuePage.filters.test.tsx` | PLANNED (F-08 v1 contract) | – |
+| FR-11 | F-08 | 2 | AC-08-1..AC-08-5 | T-08-01..T-08-06 | `server/tests/filters.test.ts` (parseRequestFilters), `server/tests/filters.int.test.ts` (/mine with filters) | T-08-02..06 FAIL on `c4b5edd` (RED, CI 46153824500); PASS on `14ad815` (unit, API + DB) | 14ad815 |
+| FR-11, NFR-03 | F-08 | 2 | AC-08-6, AC-08-9 | T-08-07, T-08-10 | `server/tests/filters.int.test.ts` (never another user's request; 401 / 403) | PASS before and after (guard) | 14ad815 |
+| FR-11, FR-05 | F-08 | 2 | AC-08-7 | T-08-08, T-08-09 | `server/tests/filters.int.test.ts` (/queue with filters) | FAIL on `c4b5edd` (RED); PASS on `14ad815` (API + DB) | 14ad815 |
+| FR-11, FR-08 | F-08 | 2 | AC-08-8 | T-08-11 | `server/tests/filters.int.test.ts` (after F-05) | PLANNED (needs F-05 `DRAFT` on `staging`) | – |
+| FR-11 | F-08 | 2 | AC-08-10 | T-08-12..T-08-17 | `client/src/requests/MyRequestsPage.filters.test.tsx` (My requests and Review queue filters) | 6 FAIL on `c4b5edd` (RED); PASS on `14ad815` (component); F-03 empty text PASS before and after | 14ad815 |
 
 Do not mark a row PASS until the test has run on the stated commit.
