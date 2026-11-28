@@ -79,3 +79,8 @@ Excluded: real payments, email notifications, self-registration, password recove
 | D-15 | Review queue: assigned SUBMITTED requests, oldest first, no paging in Sprint 1 (see F-04) | Accepted (PR #15 review, 2026-11-13) |
 | D-16 | Decisions are final in Sprint 1; return for changes is F-06 in Sprint 2 (see F-04) | Accepted (PR #15 review, 2026-11-13) |
 | D-17 | BR-08: an approval above 20,000.00 THB needs a comment of 10–1000 characters; checked after the access and state checks, so outsiders still get 404 and decided requests 409 (see F-04 v4) | Proposed 2026-11-27 (CR-01, #45); accepted in the contract PR review |
+| D-24 | Filters are query parameters on `/api/requests/mine` (status, category, from, to) and `/api/reviews/queue` (category, from, to); no parameters = the unfiltered list (see F-08) | Proposed 2026-11-28 (F-08, #51) |
+| D-25 | `status` is one `RequestStatus` value read from the Prisma enum, `category` one D-03 value; exact upper case; `status` on the queue is a 400 (see F-08) | Proposed 2026-11-28 (F-08, #51) |
+| D-26 | `from`/`to` are inclusive calendar dates in Asia/Bangkok (UTC+7) on `submittedAt`; `from` after `to` is a 400 (see F-08) | Proposed 2026-11-28 (F-08, #51) |
+| D-27 | A request without `submittedAt` (F-05 draft) never matches a date filter (see F-08) | Proposed 2026-11-28 (F-08, #51) |
+| D-28 | Bad filter values give 400 with per-field `details`; empty value = no filter; a repeated parameter is a 400; unknown parameters are ignored (see F-08) | Proposed 2026-11-28 (F-08, #51) |

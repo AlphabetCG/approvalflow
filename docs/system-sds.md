@@ -52,6 +52,7 @@ Hiding a button in the UI is not authorization; every rule above is enforced in 
 - JSON request/response; errors as `{ "error": "CODE", "message": "..." }`.
 - 400 validation, 401 not signed in, 403 forbidden role, 404 not found or not yours, 409 invalid transition.
 - `/api/health` (liveness) and `/api/ready` (database check) are public.
+- _Sprint 2 (F-08):_ list filters are optional query parameters on the existing list endpoints; they are AND-ed with the endpoint's access condition, so they can only narrow a list. Dates in filters are Asia/Bangkok calendar days. Bad values give 400 with per-field `details`.
 
 ## 6. Authentication
 

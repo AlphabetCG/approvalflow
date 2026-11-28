@@ -60,5 +60,10 @@ Requirement → feature → sprint → acceptance criterion → planned test →
 | BR-03 | F-04 | 1 | AC-04-3, AC-04-4, AC-04-11 | E2E-02 | `e2e/tests/sprint1.spec.ts` (reject journey) | PASS (E2E) | ce29a4e |
 | NFR-03 | F-03, F-04 | 1 | AC-03-4, AC-04-7, AC-04-10 | E2E-03 | `e2e/tests/sprint1.spec.ts` (access restrictions) | PASS (E2E) | ce29a4e |
 | FR-01 | F-01 | 1 | AC-01-5, AC-01-9 | E2E-04 | `e2e/tests/sprint1.spec.ts` (sign out) | PASS (E2E) | ce29a4e |
+| FR-11 | F-08 | 2 | AC-08-1..AC-08-5 | T-08-01..T-08-06 | `server/tests/filters.test.ts`, `server/tests/filters.int.test.ts` | PLANNED (F-08 v1 contract) | – |
+| FR-11, NFR-03 | F-08 | 2 | AC-08-6, AC-08-9 | T-08-07, T-08-10 | `server/tests/filters.int.test.ts` | PLANNED (F-08 v1 contract) | – |
+| FR-11, FR-05 | F-08 | 2 | AC-08-7 | T-08-08, T-08-09 | `server/tests/filters.int.test.ts` | PLANNED (F-08 v1 contract) | – |
+| FR-11, FR-08 | F-08 | 2 | AC-08-8 | T-08-11 | `server/tests/filters.int.test.ts` (after F-05) | PLANNED (F-08 v1 contract) | – |
+| FR-11 | F-08 | 2 | AC-08-10 | T-08-12..T-08-17 | `client/src/requests/MyRequestsPage.filters.test.tsx`, `client/src/reviews/ReviewQueuePage.filters.test.tsx` | PLANNED (F-08 v1 contract) | – |
 
 Do not mark a row PASS until the test has run on the stated commit.
