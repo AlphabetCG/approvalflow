@@ -18,7 +18,7 @@ Why: same stack as Labs 1–4, and it matches the Lab 5 Starter Kit (one image o
 |---|---|---|
 | User | id, email, passwordHash, role, department | email unique; role in (REQUESTER, REVIEWER, ADMIN) |
 | Session | id, userId, expiresAt | stored in the database, not in memory |
-| Request | id, requesterId, reviewerId, title, category, amount, description, status, submittedAt | amount DECIMAL(12,2) > 0; reviewerId ≠ requesterId |
+| Request | id, requesterId, reviewerId, title, category, amount, description, status, submittedAt, createdAt (F-05) | amount DECIMAL(12,2) > 0; reviewerId ≠ requesterId; F-05: reviewerId and submittedAt are NULL exactly when status = DRAFT |
 | RequestHistory | id, requestId, actorId, fromStatus, toStatus, action, reason, createdAt | insert only |
 
 _TODO: ER diagram._
@@ -28,6 +28,9 @@ _TODO: ER diagram._
 | From | Action | To | Who |
 |---|---|---|---|
 | – | submit | SUBMITTED | requester |
+| _Sprint 2 (F-05):_ – | create draft | DRAFT | requester |
+| _Sprint 2 (F-05):_ DRAFT | edit (no history row, D-22) | DRAFT | requester |
+| _Sprint 2 (F-05):_ DRAFT | submit (reviewer assigned now, D-19) | SUBMITTED | requester |
 | SUBMITTED | approve | APPROVED | assigned reviewer (not the requester) |
 | SUBMITTED | reject (reason) | REJECTED | assigned reviewer (not the requester) |
 | _Sprint 2:_ SUBMITTED | return (reason) | RETURNED | assigned reviewer |
@@ -43,6 +46,7 @@ Any other transition returns 409.
 | View own requests | ✓ | ✓ | – |
 | View assigned requests | – | ✓ (assigned only) | – |
 | Approve / reject | – | ✓ (assigned, not own) | – |
+| Save, edit, submit own draft (F-05) | ✓ | ✓ | – |
 | Manage users (Sprint 2) | – | – | ✓ |
 
 Hiding a button in the UI is not authorization; every rule above is enforced in the API.
