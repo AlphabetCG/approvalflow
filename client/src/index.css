@@ -243,3 +243,21 @@ button.danger {
 .request-detail > [role="status"] {
   margin: 0 0 1rem;
 }
+
+/* F-08: filter bar above My requests and the Review queue. */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.filter-field {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.filter-field .field-error {
+  margin: 0;
+}

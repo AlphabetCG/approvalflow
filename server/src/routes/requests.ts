@@ -2,6 +2,7 @@
 import { Router } from "express";
 import { requireAuth } from "../auth/middleware";
 import { badRequest, notFound } from "../http";
+import { parseRequestFilters } from "../requests/filters";
 import { findReadableRequest, listMyRequests } from "../requests/read";
 import { submitRequest } from "../requests/submit";
 import { validateSubmitRequest } from "../requests/validation";
@@ -17,9 +18,11 @@ requestsRouter.post("/", requireAuth, async (req, res) => {
   res.status(201).json(await submitRequest(req.user!, result.value));
 });
 
-// Registered before "/:id", so "mine" is never read as an id.
+// Registered before "/:id", so "mine" is never read as an id. F-08: optional filters.
 requestsRouter.get("/mine", requireAuth, async (req, res) => {
-  res.json({ requests: await listMyRequests(req.user!.id) });
+  const filters = parseRequestFilters(req.query as Record<string, unknown>, { allowStatus: true });
+  if (!filters.ok) throw badRequest(filters.errors.map((e) => e.message).join("; "), filters.errors);
+  res.json({ requests: await listMyRequests(req.user!.id, filters.value) });
 });
 
 // D-10: not yours and not found give the same 404, so existence is not revealed.

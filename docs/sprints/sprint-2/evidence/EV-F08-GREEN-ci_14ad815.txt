@@ -1,0 +1,11 @@
+CI run 46154160525 (ci-docker.yml, workflow_dispatch) on 14ad815, feature/51-filtering-impl: success
+https://github.com/AlphabetCG/approvalflow/actions/runs/46154160525
+
+[Server — install, typecheck, test (unit + API/DB), build]  ✓  unit  tests/filters.test.ts (14 tests) 10ms
+[Server — install, typecheck, test (unit + API/DB), build]  ✓  integration  tests/filters.int.test.ts (15 tests) 1012ms
+[Server — install, typecheck, test (unit + API/DB), build]  Test Files  15 passed (15)
+[Server — install, typecheck, test (unit + API/DB), build]       Tests  217 passed (217)
+[Client — install, test, build]  ✓ src/requests/MyRequestsPage.filters.test.tsx (7 tests) 578ms
+[Client — install, test, build]  Test Files  8 passed (8)
+[Client — install, test, build]       Tests  58 passed (58)
+[E2E — Sprint 1 journeys (Playwright, Chromium)]   4 passed (17.0s)
