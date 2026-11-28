@@ -85,3 +85,8 @@ Excluded: real payments, email notifications, self-registration, password recove
 | D-21 | Only the requester reads, edits or submits a draft; anyone else gets 404 like D-10 (see F-05) | Proposed 2026-11-27 (F-05, #48) |
 | D-22 | History: `CREATE_DRAFT` (null → DRAFT) and `SUBMIT` (DRAFT → SUBMITTED); editing a draft writes no row (see F-05) | Proposed 2026-11-27 (F-05, #48) |
 | D-23 | My requests lists drafts first (newest created first), then the rest by `submittedAt`, with an explicit NULLS FIRST query; revises D-11 (see F-05) | Proposed 2026-11-27 (F-05, #48) |
+| D-24 | Filters are query parameters on `/api/requests/mine` (status, category, from, to) and `/api/reviews/queue` (category, from, to); no parameters = the unfiltered list (see F-08) | Proposed 2026-11-28 (F-08, #51) |
+| D-25 | `status` is one `RequestStatus` value read from the Prisma enum, `category` one D-03 value; exact upper case; `status` on the queue is a 400 (see F-08) | Proposed 2026-11-28 (F-08, #51) |
+| D-26 | `from`/`to` are inclusive calendar dates in Asia/Bangkok (UTC+7) on `submittedAt`; `from` after `to` is a 400 (see F-08) | Proposed 2026-11-28 (F-08, #51) |
+| D-27 | A request without `submittedAt` (F-05 draft) never matches a date filter (see F-08) | Proposed 2026-11-28 (F-08, #51) |
+| D-28 | Bad filter values give 400 with per-field `details`; empty value = no filter; a repeated parameter is a 400; unknown parameters are ignored (see F-08) | Proposed 2026-11-28 (F-08, #51) |
